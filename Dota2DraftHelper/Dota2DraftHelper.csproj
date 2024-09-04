@@ -8,4 +8,13 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Images\Dota2DraftHelperIcon.ico" />
+    <None Remove="Images\Dota2DraftHelperIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Dota2DraftHelperIcon.ico" />
+  </ItemGroup>
+
 </Project>

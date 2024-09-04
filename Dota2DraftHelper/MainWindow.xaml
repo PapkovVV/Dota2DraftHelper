@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dota2DraftHelper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        WindowStartupLocation="CenterScreen" 
+        Title="Dota 2 Draft Helper" Height="550" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
     <Grid>
 
     </Grid>

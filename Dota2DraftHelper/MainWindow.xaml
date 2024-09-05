@@ -4,10 +4,34 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dota2DraftHelper"
+        xmlns:fc="http://devpelux.github.io/fullcontrols"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen" 
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
         Title="Dota 2 Draft Helper" Height="550" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
     <Grid>
+        <TabControl>
+            <TabItem Header="Opponents' heroes" IsSelected="True">
+            </TabItem>
 
+            <TabItem Header="Hero pool" IsSelected="True">
+                <StackPanel>
+                    <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="0">
+                        <fc:ComboBoxItemPlus Content="Safe Lane (Pos 1)"/>
+                        <fc:ComboBoxItemPlus Content="Mid Lane (Pos 2)"/>
+                        <fc:ComboBoxItemPlus Content="Hard Lane (Pos 3)"/>
+                        <fc:ComboBoxItemPlus Content="Support (Pos 4)"/>
+                        <fc:ComboBoxItemPlus Content="Hard Support (Pos 5)"/>
+                    </fc:ComboBoxPlus>
+
+                    <fc:ButtonPlus Width="100" Height="30" HorizontalAlignment="Right" Margin="0 0 20 0" Content="Add Hero" Command="{Binding AddHeroInPoolCommand}"/>
+
+                    <ScrollViewer Margin="20" Height="400">
+                        <StackPanel>
+                            
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

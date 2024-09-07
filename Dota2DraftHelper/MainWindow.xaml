@@ -26,7 +26,10 @@
                     <fc:ButtonPlus Width="100" Height="30" HorizontalAlignment="Right" Margin="0 0 20 0" Content="Add Hero" Command="{Binding AddHeroInPoolCommand}"/>
 
                     <ScrollViewer Margin="20" Height="400">
-                        <StackPanel>
+                        <StackPanel Background="#DCDCDC">
+                            <ItemsControl ItemsSource="{Binding HeroesFromPool}">
+                                
+                            </ItemsControl>
                             
                         </StackPanel>
                     </ScrollViewer>

@@ -16,15 +16,11 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="FullControls" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Images\Dota2DraftHelperIcon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DataBase\" />
   </ItemGroup>
 
 </Project>

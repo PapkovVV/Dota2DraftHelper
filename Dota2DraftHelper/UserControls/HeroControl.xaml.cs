@@ -1,28 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Dota2DraftHelper.Models;
+using Dota2DraftHelper.ViewModels;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace Dota2DraftHelper.UserControls
+namespace Dota2DraftHelper.UserControls;
+
+/// <summary>
+/// Логика взаимодействия для HeroControl.xaml
+/// </summary>
+public partial class HeroControl : UserControl
 {
-    /// <summary>
-    /// Логика взаимодействия для HeroControl.xaml
-    /// </summary>
-    public partial class HeroControl : UserControl
+    public HeroControl(Hero hero)
     {
-        public HeroControl()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        DataContext = new HeroViewModel(hero);
     }
 }

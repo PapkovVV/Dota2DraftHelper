@@ -7,10 +7,11 @@
              xmlns:fc="http://devpelux.github.io/fullcontrols"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Height="37" CornerRadius="10" Background="White"  HorizontalAlignment="Stretch">
+    <Border Height="37" CornerRadius="10" Background="White"  HorizontalAlignment="Stretch" Margin="5" Cursor="">
         <Grid>
             <Label Content="{Binding HeroName}" VerticalAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Margin="10 0 0 0"/>
-            <fc:ButtonPlus Width="33" Height="30" Margin="3" HorizontalAlignment="Right">
+            <fc:ButtonPlus Width="33" Height="30" Margin="3" HorizontalAlignment="Right" Cursor="Hand" 
+                           BackgroundOnMouseOver="LightGray" BackgroundOnPressed="LightBlue">
                 <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             </fc:ButtonPlus>
         </Grid>

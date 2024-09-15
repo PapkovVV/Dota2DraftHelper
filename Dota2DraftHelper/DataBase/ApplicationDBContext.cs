@@ -9,10 +9,11 @@ public class ApplicationDBContext:DbContext
     public DbSet<Lane> Lanes { get; set; } = null!; // Table "Lanes"
     public DbSet<Hero> Heroes { get; set; } = null!; // Table "Heroes"
     public DbSet<CounterPickInfo> CounterPickInfos { get; set; } = null!; // Table "CounterPickInfos"
+    public DbSet<OwnPick> OwnPicks { get; set; } = null!; // Table "OwnPicks"
 
     public ApplicationDBContext()
     {
-        Database.EnsureDeleted();
+        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
@@ -24,5 +25,6 @@ public class ApplicationDBContext:DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new CounterPickInfoConfiguration());
+        modelBuilder.ApplyConfiguration(new OwnPickConfiguration());
     }
 }

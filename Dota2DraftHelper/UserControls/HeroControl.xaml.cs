@@ -9,9 +9,9 @@ namespace Dota2DraftHelper.UserControls;
 /// </summary>
 public partial class HeroControl : UserControl
 {
-    public HeroControl(Hero hero)
+    public HeroControl(OwnPick ownPick)
     {
         InitializeComponent();
-        DataContext = new HeroViewModel(hero);
+        DataContext = new HeroViewModel(ownPick);
     }
 }

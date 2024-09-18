@@ -11,12 +11,15 @@ namespace Dota2DraftHelper.ViewModels;
 
 public partial class AddHeroDialogViewModel:ObservableObject
 {
+    private Window callingWindow = null;
+
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> heroes = new ObservableCollection<ComboBoxItemPlus>();
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> lanes = new ObservableCollection<ComboBoxItemPlus>();
     [ObservableProperty] ComboBoxItemPlusWithInfo selectedHero;
     [ObservableProperty] ComboBoxItemPlusWithInfo selectedLane;
-    public AddHeroDialogViewModel()
+    public AddHeroDialogViewModel(Window window)
     {
+        callingWindow = window;
         GetHeroesInComboBox();
         GetLanesInComboBox();
     }
@@ -60,6 +63,7 @@ public partial class AddHeroDialogViewModel:ObservableObject
             if (saveResult)
             {
                 MessageBox.Show("Saved!", "Correct!", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                callingWindow.DialogResult = true;
             }
             else
             {

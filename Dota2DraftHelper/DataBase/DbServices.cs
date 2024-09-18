@@ -62,6 +62,21 @@ public static class DbServices
         return heroes;
     }
 
+    public static Hero GetHero(int heroId) // Get hero info
+    {
+        Hero hero = new Hero();
+
+        using (var db = new ApplicationDBContext())
+        {
+            if (db.Heroes.FirstOrDefault(x => x.Id == heroId) != null)
+            {
+                hero = db.Heroes.FirstOrDefault(x => x.Id == heroId)!;
+            }
+        }
+
+        return hero;
+    }
+
     public static IEnumerable<Lane> GetLanes() // Get lanes list
     {
         List<Lane> lanes = new List<Lane>();
@@ -75,6 +90,21 @@ public static class DbServices
         }
 
         return lanes;
+    }
+
+    public static IEnumerable<OwnPick> GetOwnPicks(int laneId) // Get own pick heroes
+    {
+        List<OwnPick> ownPicks = new List<OwnPick>();
+
+        using (var db = new ApplicationDBContext())
+        {
+            if (db.OwnPicks.Where(x => x.LaneId == laneId + 1).Count() > 0)
+            {
+                ownPicks.AddRange(db.OwnPicks);
+            }
+        }
+
+        return ownPicks;
     }
 
     public static bool AddOwnHero(int heroId, int laneId) // Save own pick in DB
@@ -98,5 +128,21 @@ public static class DbServices
 
             return false;
         }
+    }
+    
+    public static bool RemoveOwnHero(int heroId, int laneId) // Remove hero from own pick in DB
+    {
+        using (var db = new ApplicationDBContext())
+        {
+            if (db.OwnPicks.FirstOrDefault(x => x.HeroId == heroId && x.LaneId == laneId) != null)
+            {
+                db.OwnPicks.Remove(db.OwnPicks.FirstOrDefault(x => x.HeroId == heroId && x.LaneId == laneId)!);
+
+                db.SaveChanges();
+
+                return true;
+            }
+        }
+        return false;
     }
 }

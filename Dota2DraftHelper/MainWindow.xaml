@@ -15,7 +15,7 @@
 
             <TabItem Header="Hero pool" IsSelected="True">
                 <StackPanel>
-                    <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="0">
+                    <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}">
                         <fc:ComboBoxItemPlus Content="Safe Lane (Pos 1)"/>
                         <fc:ComboBoxItemPlus Content="Mid Lane (Pos 2)"/>
                         <fc:ComboBoxItemPlus Content="Hard Lane (Pos 3)"/>
@@ -25,12 +25,9 @@
 
                     <fc:ButtonPlus Width="100" Height="30" HorizontalAlignment="Right" Margin="0 0 20 0" Content="Add Hero" Command="{Binding AddHeroInPoolCommand}"/>
 
-                    <ScrollViewer Margin="20" Height="400">
+                    <ScrollViewer Margin="20" Height="350">
                         <StackPanel Background="#DCDCDC">
-                            <ItemsControl ItemsSource="{Binding HeroesFromPool}">
-                                
-                            </ItemsControl>
-                            
+                            <ItemsControl ItemsSource="{Binding HeroesFromPoolUI}"/>
                         </StackPanel>
                     </ScrollViewer>
                 </StackPanel>

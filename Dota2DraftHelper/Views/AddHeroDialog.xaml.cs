@@ -11,6 +11,6 @@ public partial class AddHeroDialog : Window
     public AddHeroDialog()
     {
         InitializeComponent();
-        DataContext = new AddHeroDialogViewModel();
+        DataContext = new AddHeroDialogViewModel(this);
     }
 }

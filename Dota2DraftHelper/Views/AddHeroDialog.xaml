@@ -20,7 +20,7 @@
                 <fc:ComboBoxPlus ItemsSource="{Binding Lanes}" IsEditable="True" VerticalContentAlignment="Center" Width="180" SelectedItem="{Binding SelectedLane}"/>
             </StackPanel>
 
-            <fc:ButtonPlus Height="30" Width="100" HorizontalAlignment="Right" Margin="0 30 12 0" Content="Save" Cursor="Hand" 
+            <fc:ButtonPlus Height="30" Width="100" HorizontalAlignment="Right" Margin="0 30 12 0" Content="Save" Cursor="Hand" IsDefault="True"
                            BackgroundOnMouseOver="LightSkyBlue" BackgroundOnPressed="LightGray" Command="{Binding SaveOwnHeroCommand}"/>
         </StackPanel>
     </Grid>

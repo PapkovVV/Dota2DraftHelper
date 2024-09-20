@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Dota2DraftHelper.DataBase;
 using Dota2DraftHelper.Expansion_classes;
 using Dota2DraftHelper.Models;
+using Dota2DraftHelper.Services;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -26,7 +27,7 @@ public partial class AddHeroDialogViewModel : ObservableObject
 
     private async void GetHeroesInComboBoxAsync()// (OP)
     {
-        IEnumerable<Hero> dbHeroes = (await DbServices.GetHeroesAsync()).OrderBy(h => h.Name);
+        IEnumerable<Hero> dbHeroes = (await CacheHeroes.GetHeroesAsync()).OrderBy(h => h.Name);
 
         if (dbHeroes.Any())
         {
@@ -43,7 +44,7 @@ public partial class AddHeroDialogViewModel : ObservableObject
 
     private async void GetLanesInComboBoxAsync()// (OP)
     {
-        IEnumerable<Lane> dbLanes = await DbServices.GetLanesAsync();
+        IEnumerable<Lane> dbLanes = await CacheLanes.GetLanesAsync();
 
         if (dbLanes.Any())
         {

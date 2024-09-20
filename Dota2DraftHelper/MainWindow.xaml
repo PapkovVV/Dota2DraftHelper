@@ -11,6 +11,22 @@
     <Grid>
         <TabControl>
             <TabItem Header="Opponents' heroes" IsSelected="True">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="260"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10">
+                        <StackPanel>
+                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding FPick}"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding SPick}"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding ThPick}"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding FoPick}"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding FifPick}"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
             </TabItem>
 
             <TabItem Header="Hero pool" IsSelected="True">

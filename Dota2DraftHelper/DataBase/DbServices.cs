@@ -7,7 +7,7 @@ namespace Dota2DraftHelper.DataBase;
 
 public static class DbServices
 {
-    public static async void AddHeroesAsync() // Add heroes in DB(OP)
+    public static async Task AddHeroesInDBAsync() // Add heroes in DB(OP)
     {
         using (var db = new ApplicationDBContext())
         {

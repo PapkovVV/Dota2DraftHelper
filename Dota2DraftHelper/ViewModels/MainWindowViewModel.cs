@@ -103,15 +103,15 @@ public partial class MainWindowViewModel : ObservableObject
 
         AddHeroDialog addHeroDialog = new AddHeroDialog();
         
-        if (addHeroDialog.DialogResult == true)
+        if (addHeroDialog.ShowDialog() == true)
         {
             HeroesFromPool = new ObservableCollection<OwnPick>(DbServices.GetOwnPicks(SelectedLane));
         }
     }
 
-    partial void OnSelectedLaneChanging(int value)
+    partial void OnSelectedLaneChanged(int oldValue, int newValue)
     {
-        HeroesFromPool = new ObservableCollection<OwnPick>(DbServices.GetOwnPicks(value));
+        HeroesFromPool = new ObservableCollection<OwnPick>(DbServices.GetOwnPicks(newValue));
         SetUI();
     }
 }

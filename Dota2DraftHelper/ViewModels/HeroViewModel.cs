@@ -11,7 +11,7 @@ public partial class HeroViewModel : ObservableObject
     OwnPick ownPick;
 
     [ObservableProperty] string heroName = ""; // Hero name
-    public HeroViewModel(OwnPick ownPick)
+    public HeroViewModel(Window parent, OwnPick ownPick)
     {
         this.ownPick = ownPick;
         HeroName = GetHeroNameFromDb(ownPick.HeroId);

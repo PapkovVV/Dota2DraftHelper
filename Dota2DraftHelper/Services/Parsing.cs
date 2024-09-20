@@ -1,5 +1,8 @@
 ﻿using Dota2DraftHelper.Models;
 using HtmlAgilityPack;
+using System;
+using System.Net.Http;
+using System.Security.Policy;
 using System.Windows;
 
 namespace Dota2DraftHelper.Services;
@@ -8,11 +11,11 @@ public static class Parsing
 {
     private static HtmlWeb htmlWeb = new HtmlWeb(); 
 
-    public static IEnumerable<Hero> ParseHeroesInfo() // Get the list of heroes
+    public static async Task<List<Hero>> ParseHeroesInfoAsync() // Get the list of heroes (OP)
     {
         var heroes = new List<Hero>();
 
-        var doc = htmlWeb.Load("https://www.dotabuff.com/heroes"); // Link on all dota 2 heroes
+        var doc = await htmlWeb.LoadFromWebAsync("https://www.dotabuff.com/heroes").ConfigureAwait(false);
 
         var heroRows = doc.DocumentNode.SelectNodes("//tr[@class='tw-border-b tw-transition-colors hover:tw-bg-muted/50 data-[state=selected]:tw-bg-muted']");
 

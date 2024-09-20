@@ -14,7 +14,7 @@ public class ApplicationDBContext:DbContext
     public ApplicationDBContext()
     {
         //Database.EnsureDeleted();
-        Database.EnsureCreated();
+        Database.EnsureCreatedAsync();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -26,5 +26,6 @@ public class ApplicationDBContext:DbContext
     {
         modelBuilder.ApplyConfiguration(new CounterPickInfoConfiguration());
         modelBuilder.ApplyConfiguration(new OwnPickConfiguration());
+        modelBuilder.ApplyConfiguration(new LaneConfiguration());
     }
 }

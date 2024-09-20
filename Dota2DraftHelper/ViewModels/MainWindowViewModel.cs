@@ -5,8 +5,6 @@ using Dota2DraftHelper.Models;
 using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -14,21 +12,17 @@ public partial class MainWindowViewModel : ObservableObject
 {
     [ObservableProperty] ObservableCollection<OwnPick> heroesFromPool = null!;// Heroes from own hero pool
     [ObservableProperty] ObservableCollection<HeroControl> heroesFromPoolUI = null!;
-    [ObservableProperty] int selectedLane = 0;
+    [ObservableProperty] uint selectedLane = 0;
     public MainWindowViewModel()
     {
-        HeroesFromPool = new ObservableCollection<OwnPick>(DbServices.GetOwnPicks(SelectedLane));
-        SetUI();
+        DbServices.AddHeroesAsync();
+        SetUIAsync(SelectedLane);
     }
 
-    private void DbCalls() // Call DB Methods
+    public async void SetUIAsync(uint laneId) // Set UI (OP)
     {
-        DbServices.AddHeroes();
-        DbServices.AddLanes();
-    }
+        HeroesFromPool = new ObservableCollection<OwnPick>(await DbServices.GetOwnPicksAsync(laneId));
 
-    private void SetUI() // Set UI
-    {
         HeroesFromPoolUI = new ObservableCollection<HeroControl>();
 
         if (HeroesFromPool.Count > 0)
@@ -97,21 +91,18 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void AddHeroInPool()
+    private void AddHeroInPool() // (OP)
     {
-        DbCalls();
-
         AddHeroDialog addHeroDialog = new AddHeroDialog();
-        
+
         if (addHeroDialog.ShowDialog() == true)
         {
-            HeroesFromPool = new ObservableCollection<OwnPick>(DbServices.GetOwnPicks(SelectedLane));
+            SetUIAsync(SelectedLane);
         }
     }
 
-    partial void OnSelectedLaneChanged(int oldValue, int newValue)
+    partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
     {
-        HeroesFromPool = new ObservableCollection<OwnPick>(DbServices.GetOwnPicks(newValue));
-        SetUI();
+        SetUIAsync(newValue);
     }
 }

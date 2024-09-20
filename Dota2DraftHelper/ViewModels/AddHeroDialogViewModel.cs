@@ -9,56 +9,61 @@ using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
-public partial class AddHeroDialogViewModel:ObservableObject
+public partial class AddHeroDialogViewModel : ObservableObject
 {
-    private Window callingWindow = null;
+    private Window callingWindow = null!;
 
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> heroes = new ObservableCollection<ComboBoxItemPlus>();
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> lanes = new ObservableCollection<ComboBoxItemPlus>();
-    [ObservableProperty] ComboBoxItemPlusWithInfo selectedHero;
-    [ObservableProperty] ComboBoxItemPlusWithInfo selectedLane;
+    [ObservableProperty] ComboBoxItemPlusWithInfo selectedHero = null!;
+    [ObservableProperty] ComboBoxItemPlusWithInfo selectedLane = null!;
     public AddHeroDialogViewModel(Window window)
     {
         callingWindow = window;
-        GetHeroesInComboBox();
-        GetLanesInComboBox();
+        GetHeroesInComboBoxAsync();
+        GetLanesInComboBoxAsync();
     }
 
-    private void GetHeroesInComboBox()
+    private async void GetHeroesInComboBoxAsync()// (OP)
     {
-        IEnumerable<Hero> dbHeroes = DbServices.GetHeroes().OrderBy(h => h.Name);
+        IEnumerable<Hero> dbHeroes = (await DbServices.GetHeroesAsync()).OrderBy(h => h.Name);
 
-        foreach (var dbHero in dbHeroes)
+        if (dbHeroes.Any())
         {
-            Heroes.Add(new ComboBoxItemPlusWithInfo()
+            foreach (var dbHero in dbHeroes)
             {
-                Content = dbHero.Name,
-                AdditionalInfo = dbHero.Id
-            });
+                Heroes.Add(new ComboBoxItemPlusWithInfo()
+                {
+                    Content = dbHero.Name,
+                    AdditionalInfo = dbHero.Id
+                });
+            }
         }
     }
 
-    private void GetLanesInComboBox()
+    private async void GetLanesInComboBoxAsync()// (OP)
     {
-        IEnumerable<Lane> dbLanes = DbServices.GetLanes();
+        IEnumerable<Lane> dbLanes = await DbServices.GetLanesAsync();
 
-        foreach (var dbLane in dbLanes)
+        if (dbLanes.Any())
         {
-            Lanes.Add(new ComboBoxItemPlusWithInfo()
+            foreach (var dbLane in dbLanes)
             {
-                Content = $"{dbLane.Name} ({dbLane.AlternativeName})",
-                AdditionalInfo = dbLane.Id
-            });
+                Lanes.Add(new ComboBoxItemPlusWithInfo()
+                {
+                    Content = $"{dbLane.Name} ({dbLane.AlternativeName})",
+                    AdditionalInfo = dbLane.Id
+                });
+            }
         }
-
     }
 
     [RelayCommand]
-    private void SaveOwnHero()
+    private async Task SaveOwnHeroAsync() // (OP)
     {
         if (SelectedHero != null && SelectedLane != null)
         {
-            bool saveResult = DbServices.AddOwnHero(Convert.ToInt32(SelectedHero.AdditionalInfo), Convert.ToInt32(SelectedLane.AdditionalInfo));
+            bool saveResult = await DbServices.AddOwnHeroAsync(Convert.ToInt32(SelectedHero.AdditionalInfo), Convert.ToInt32(SelectedLane.AdditionalInfo));
 
             if (saveResult)
             {
@@ -72,7 +77,7 @@ public partial class AddHeroDialogViewModel:ObservableObject
         }
         else
         {
-            MessageBox.Show("Mistake! Select the correct data!","Incorrect data!",MessageBoxButton.OK,MessageBoxImage.Error);
+            MessageBox.Show("Mistake! Select the correct data!", "Incorrect data!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

@@ -9,25 +9,39 @@ namespace Dota2DraftHelper.ViewModels;
 public partial class HeroViewModel : ObservableObject
 {
     OwnPick ownPick;
+    MainWindowViewModel parentViewModel;
 
     [ObservableProperty] string heroName = ""; // Hero name
-    public HeroViewModel(Window parent, OwnPick ownPick)
+    public HeroViewModel(MainWindowViewModel parentViewModel, OwnPick ownPick)
     {
+        this.parentViewModel = parentViewModel;
         this.ownPick = ownPick;
-        HeroName = GetHeroNameFromDb(ownPick.HeroId);
+        Init();
     }
 
-    private string GetHeroNameFromDb(int heroId)
+    private async void Init() // (OP)
     {
-        return DbServices.GetHero(heroId).Name;
+        HeroName = await GetHeroNameFromDbAsync(ownPick.HeroId);
+    }
+    private async Task<string> GetHeroNameFromDbAsync(int heroId) // (OP)
+    {
+        Hero? hero = await DbServices.GetHeroAsync(heroId);
+
+        if (hero != null)
+        {
+            return hero.Name;
+        }
+
+        return "";
     }
 
     [RelayCommand]
-    private void RemoveHeroFromPool()
+    private async Task RemoveHeroFromPoolAsync() // (OP)
     {
-        if (DbServices.RemoveOwnHero(ownPick.HeroId, ownPick.LaneId))
+        if (await DbServices.RemoveOwnHeroAsync(ownPick.HeroId, ownPick.LaneId))
         {
             MessageBox.Show($"{HeroName} was removed from your pick succesfully!", "Success", MessageBoxButton.OK,MessageBoxImage.Asterisk);
+            parentViewModel.SetUIAsync(Convert.ToUInt32(ownPick.LaneId));
             return;
         }
 

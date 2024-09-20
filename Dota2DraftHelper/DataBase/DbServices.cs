@@ -1,127 +1,94 @@
 ﻿using Dota2DraftHelper.Models;
 using Dota2DraftHelper.Services;
+using Microsoft.EntityFrameworkCore;
+using System.Windows;
 
 namespace Dota2DraftHelper.DataBase;
 
 public static class DbServices
 {
-    public static void AddHeroes() // Add heroes in DB
+    public static async void AddHeroesAsync() // Add heroes in DB(OP)
     {
         using (var db = new ApplicationDBContext())
         {
-            if (db.Heroes.Count() < 125)
+            if (await db.Heroes.AsNoTracking().CountAsync() < 125)
             {
-                List<Hero> heroes = Parsing.ParseHeroesInfo().ToList();
+                List<Hero> heroes = await Parsing.ParseHeroesInfoAsync();
+
+                var existingHeroes = await db.Heroes.AsNoTracking()
+                                                    .Select(h => new { h.Name, h.Faceit })
+                                                    .ToListAsync();
 
                 foreach (var hero in heroes)
                 {
-                    bool exists = db.Heroes.Any(h => h.Name == hero.Name && h.Faceit == hero.Faceit);
+                    bool exists = existingHeroes.Any(h => h.Name == hero.Name && h.Faceit == hero.Faceit);
 
                     if (!exists)
                     {
-                        db.Heroes.Add(hero);
+                        await db.Heroes.AddAsync(hero);
                     }
                 }
 
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
         }
     }
 
-    public static void AddLanes() // Add lanes in Db
+    public static async Task<List<Hero>> GetHeroesAsync() // Get heroes list(OP)
     {
-
         using (var db = new ApplicationDBContext())
         {
-            if (db.Lanes.Count() < 5)
+            return await db.Heroes.AsNoTracking().ToListAsync();
+        }
+    }
+
+    public static async Task<Hero?> GetHeroAsync(int heroId) // Get hero info(OP)
+    {
+        using (var db = new ApplicationDBContext())
+        {
+            try
             {
-                List<Lane> lanes = [new Lane() { Name = "Safe Lane", AlternativeName = "Pos 1" },
-                                    new Lane() { Name = "Mid Lane", AlternativeName = "Pos 2" },
-                                    new Lane() { Name = "Hard Lane", AlternativeName = "Pos 3" },
-                                    new Lane() { Name = "Support", AlternativeName = "Pos 4" },
-                                    new Lane() { Name = "Hard Support", AlternativeName = "Pos 5" }];
-                db.Lanes.AddRange(lanes);
+                return await db.Heroes.AsNoTracking().FirstOrDefaultAsync(x => x.Id == heroId);
             }
-
-            db.SaveChanges();
-        }
-    }
-
-    public static IEnumerable<Hero> GetHeroes() // Get heroes list
-    {
-        List<Hero> heroes = new List<Hero>();
-
-        using (var db = new ApplicationDBContext())
-        {
-            if (db.Heroes.Count() > 0)
+            catch (Exception ex)
             {
-                heroes.AddRange(db.Heroes.ToList());
+                MessageBox.Show($"Error retrieving hero: {ex.Message}");
+                return null;
             }
         }
-
-        return heroes;
     }
 
-    public static Hero GetHero(int heroId) // Get hero info
-    {
-        Hero hero = new Hero();
-
-        using (var db = new ApplicationDBContext())
-        {
-            if (db.Heroes.FirstOrDefault(x => x.Id == heroId) != null)
-            {
-                hero = db.Heroes.FirstOrDefault(x => x.Id == heroId)!;
-            }
-        }
-
-        return hero;
-    }
-
-    public static IEnumerable<Lane> GetLanes() // Get lanes list
-    {
-        List<Lane> lanes = new List<Lane>();
-
-        using (var db = new ApplicationDBContext())
-        {
-            if (db.Lanes.Count() > 0)
-            {
-                lanes.AddRange(db.Lanes.ToList());
-            }
-        }
-
-        return lanes;
-    }
-
-    public static IEnumerable<OwnPick> GetOwnPicks(int laneId) // Get own pick heroes
-    {
-        List<OwnPick> ownPicks = new List<OwnPick>();
-
-        using (var db = new ApplicationDBContext())
-        {
-            if (db.OwnPicks.Where(x => x.LaneId == laneId + 1).Count() > 0)
-            {
-                ownPicks.AddRange(db.OwnPicks);
-            }
-        }
-
-        return ownPicks;
-    }
-
-    public static bool AddOwnHero(int heroId, int laneId) // Save own pick in DB
+    public static async Task<List<Lane>> GetLanesAsync() // Get lanes list(OP)
     {
         using (var db = new ApplicationDBContext())
         {
-            bool exist = db.OwnPicks.Any(p => p.HeroId == heroId && p.LaneId == laneId);
+            return await db.Lanes.AsNoTracking().ToListAsync();
+        }
+    }
+
+    public static async Task<List<OwnPick>> GetOwnPicksAsync(uint laneId) // Get own pick heroes(OP)
+    {
+        using (var db = new ApplicationDBContext())
+        {
+            return await db.OwnPicks.AsNoTracking().Where(x => x.LaneId == laneId + 1).ToListAsync();
+        }
+    }
+
+    public static async Task<bool> AddOwnHeroAsync(int heroId, int laneId) // Save own pick in DB(OP)
+    {
+        using (var db = new ApplicationDBContext())
+        {
+            bool exist = await db.OwnPicks.AsNoTracking().AnyAsync(p => p.HeroId == heroId && p.LaneId == laneId);
 
             if (!exist)
             {
-                db.OwnPicks.Add(new OwnPick()
+                await db.OwnPicks.AddAsync(new OwnPick()
                 {
                     HeroId = heroId,
                     LaneId = laneId
                 });
 
-                db.SaveChanges();
+                await db.SaveChangesAsync();
 
                 return true;
             }
@@ -129,16 +96,18 @@ public static class DbServices
             return false;
         }
     }
-    
-    public static bool RemoveOwnHero(int heroId, int laneId) // Remove hero from own pick in DB
+
+    public static async Task<bool> RemoveOwnHeroAsync(int heroId, int laneId) // Remove hero from own pick in DB(OP)
     {
         using (var db = new ApplicationDBContext())
         {
-            if (db.OwnPicks.FirstOrDefault(x => x.HeroId == heroId && x.LaneId == laneId) != null)
-            {
-                db.OwnPicks.Remove(db.OwnPicks.FirstOrDefault(x => x.HeroId == heroId && x.LaneId == laneId)!);
+            OwnPick? ownHero = await db.OwnPicks.FirstOrDefaultAsync(x => x.HeroId == heroId && x.LaneId == laneId);
 
-                db.SaveChanges();
+            if (ownHero != null)
+            {
+                db.OwnPicks.Remove(ownHero!);
+
+                await db.SaveChangesAsync();
 
                 return true;
             }

@@ -134,7 +134,7 @@ public static class Parsing
 
     private static decimal GetCounterPickWinRate(HtmlNode counterPickInfo)
     {
-        var winRateHtml = counterPickInfo.SelectSingleNode(".//td[4]");
+        var winRateHtml = counterPickInfo.SelectSingleNode(".//td[3]");
 
         if (winRateHtml != null)
         {

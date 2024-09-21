@@ -55,7 +55,7 @@
                         </fc:ComboBoxPlus>
 
                         <fc:CheckBoxPlus HorizontalAlignment="Right" Content="Use all heroes" FlowDirection="RightToLeft" Margin="0 0 20 0" IsChecked="{Binding IsAllHeroes}" 
-                                         Visibility="{Binding IsProgressExecuting, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                         Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                         <WrapPanel Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                             <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick">
@@ -64,10 +64,17 @@
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </GroupBox>
+
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                    <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </GroupBox>
                         </WrapPanel>
                     </StackPanel>
 
-                    <StackPanel  Grid.Row="1" Grid.ColumnSpan="2">
+                    <StackPanel  Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding IsProgressExecuting, Converter={StaticResource BoolToVisibilityConverter}}">
                         <Label Content="Executing operations. Wait please..." HorizontalAlignment="Center"/>
                         <ProgressBar Name="indeterminateProgressBar" IsIndeterminate="True" Height="15" Width="400">
                             <ProgressBar.Style>

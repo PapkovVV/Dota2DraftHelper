@@ -8,6 +8,7 @@ using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -35,6 +36,8 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] string bestAveragePick = "";
     [ObservableProperty] string bestAveragePickInfo = "";
+    [ObservableProperty] string worstAveragePick = "";
+    [ObservableProperty] string worstAveragePickInfo = "";
     public MainWindowViewModel()
     {
         Init();
@@ -199,8 +202,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         BestAveragePick = null;
         BestAveragePickInfo = null;
-        BestLanePickInfo = null;
-        BestLanePick = null;
+        WorstAveragePick = null;
+        WorstAveragePickInfo = null;
     }
 
     partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
@@ -238,6 +241,7 @@ public partial class MainWindowViewModel : ObservableObject
         Refresh();
     }
 
+
     private async void GetBestAgainsPick()
     {
         List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required winrates
@@ -245,8 +249,10 @@ public partial class MainWindowViewModel : ObservableObject
         if (winRates.Count > 0)
         {
             await SetBestAveragePickUI(winRates);
+            await SetWorstAveragePickUI(winRates);
         }
     }
+
     private async Task<List<CounterPickInfo>> GetAllRequiredWinRatesAsync()
     {
         var counterPicks = await CacheWinRates.GetCounterPicksAsync(); //Get all winrates
@@ -286,8 +292,8 @@ public partial class MainWindowViewModel : ObservableObject
         var averageWinRates = winRates.GroupBy(x => x.PickId).Select(g => new
         {
             PickId = g.Key,
-            AverageWinRate = g.Average(x => x.WinRate)
-        }).OrderByDescending(x => x.AverageWinRate).Take(10).ToList();
+            AverageWinRate = g.Sum(x => x.WinRate)
+        }).OrderBy(x => x.AverageWinRate).Take(15).ToList();
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
@@ -307,4 +313,34 @@ public partial class MainWindowViewModel : ObservableObject
             $"Other:" + alternative;
     }
 
+    private async Task SetWorstAveragePickUI(List<CounterPickInfo> winRates)
+    {
+        WorstAveragePick = "";
+        WorstAveragePickInfo = "";
+
+        string alternative = "";
+
+        var averageWinRates = winRates.GroupBy(x => x.PickId).Select(g => new
+        {
+            PickId = g.Key,
+            AverageWinRate = g.Sum(x => x.WinRate)
+        }).OrderByDescending(x => x.AverageWinRate).Take(15).ToList();
+
+        var allHeroes = await CacheHeroes.GetHeroesAsync();
+
+        var worstPicks = averageWinRates
+                                .Select(cp => allHeroes.FirstOrDefault(hero => hero.Id == cp.PickId))
+                                .Where(hero => hero != null)
+                                .ToList();
+
+        for (int i = 1; i < worstPicks.Count; i++)
+        {
+            alternative = alternative + $"\n{worstPicks[i]!.Name}: {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+        }
+
+        WorstAveragePick = worstPicks.First()!.Name;
+        WorstAveragePickInfo = $"Faceit: {worstPicks.First()!.Faceit}\n" +
+            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n" +
+            $"Other:" + alternative;
+    }
 }

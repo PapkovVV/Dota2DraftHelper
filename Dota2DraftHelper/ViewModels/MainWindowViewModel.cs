@@ -31,6 +31,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] bool isProgressExecuting = true;
     [ObservableProperty] bool isUIAvailable;
+    [ObservableProperty] bool isAllHeroes = false;
 
     [ObservableProperty] string bestAveragePick = "";
     [ObservableProperty] string bestAveragePickInfo = "";
@@ -233,6 +234,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         GetBestAgainsPick();
     }
+
+    partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)
+    {
+        Refresh();
+    }
+
+
     private async void GetBestAgainsPick()
     {
         List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required winrates
@@ -247,6 +255,7 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task<List<CounterPickInfo>> GetAllRequiredWinRatesAsync()
     {
         var counterPicks = await CacheWinRates.GetCounterPicksAsync(); //Get all winrates
+
         var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); // Get own picks
 
         List<int> enemyIds = new List<int>();
@@ -257,14 +266,20 @@ public partial class MainWindowViewModel : ObservableObject
         if (CarPick != null) enemyIds.Add(Convert.ToInt32(CarPick.AdditionalInfo));
         if (MidPick != null) enemyIds.Add(Convert.ToInt32(MidPick.AdditionalInfo));
 
-        counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) && x.WinRateDate == DateTime.Now.Date).ToList();
+        if (!IsAllHeroes)
+        {
+            counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) && x.WinRateDate == DateTime.Now.Date).ToList();
+        }
+        else
+        {
+            counterPicks = counterPicks.Where(x => enemyIds.Contains(x.CounterPickId) && x.WinRateDate == DateTime.Now.Date).ToList();
+        }
 
         return counterPicks;
     }
 
     private async Task SetBestAveragePickUI(List<CounterPickInfo> winRates)
     {
-
         BestAveragePick = "";
         BestAveragePickInfo = "";
 
@@ -274,7 +289,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             PickId = g.Key,
             AverageWinRate = g.Average(x => x.WinRate)
-        }).OrderByDescending(x => x.AverageWinRate).Take(5).ToList();
+        }).OrderByDescending(x => x.AverageWinRate).Take(10).ToList();
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
@@ -291,8 +306,7 @@ public partial class MainWindowViewModel : ObservableObject
         BestAveragePick = bestPicks.First()!.Name;
         BestAveragePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
             $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n" +
-            $"Other:" +
-            alternative;
+            $"Other:" + alternative;
     }
 
     private async Task SetBestLanePickUI(List<CounterPickInfo> counterPicks)
@@ -318,7 +332,7 @@ public partial class MainWindowViewModel : ObservableObject
                             return 0;
                         }).ToList();
                     }
-                    
+
                     break;
                 }
 
@@ -354,7 +368,7 @@ public partial class MainWindowViewModel : ObservableObject
                              return 0;
                          }).ToList();
                     }
-                    
+
                     break;
                 }
             case 3:

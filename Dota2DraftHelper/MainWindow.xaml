@@ -54,6 +54,8 @@
                             <fc:ComboBoxItemPlus Content="Hard Support (Pos 5)"/>
                         </fc:ComboBoxPlus>
 
+                        <fc:CheckBoxPlus HorizontalAlignment="Right" Content="Use all heroes" FlowDirection="RightToLeft" Margin="0 0 20 0" IsChecked="{Binding IsAllHeroes}"/>
+
                         <WrapPanel Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                             <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick">
                                 <StackPanel>

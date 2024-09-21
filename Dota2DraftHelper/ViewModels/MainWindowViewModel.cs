@@ -268,13 +268,13 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (!IsAllHeroes)
         {
-            counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && 
-            enemyIds.Contains(x.CounterPickId) && x.WinRateDate == DateTime.Now.Date &&
+            counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) &&
+            x.WinRateDate == DateTime.Now.Date &&
                             x.CounterPickId != x.PickId).ToList();
         }
         else
         {
-            counterPicks = counterPicks.Where(x => enemyIds.Contains(x.CounterPickId) && x.WinRateDate == DateTime.Now.Date &&
+            counterPicks = counterPicks.Where(x => enemyIds.Contains(x.CounterPickId) && !enemyIds.Contains(x.PickId) && x.WinRateDate == DateTime.Now.Date &&
                             x.CounterPickId != x.PickId).ToList();
         }
 

@@ -33,7 +33,6 @@ public static class DbServices
             }
         }
     }
-
     public static async Task<List<Hero>> GetHeroesAsync() // Get heroes list(OP)
     {
         using (var db = new ApplicationDBContext())
@@ -41,7 +40,6 @@ public static class DbServices
             return await db.Heroes.AsNoTracking().ToListAsync();
         }
     }
-
     public static async Task<Hero?> GetHeroAsync(int heroId) // Get hero info(OP)
     {
         using (var db = new ApplicationDBContext())
@@ -55,6 +53,43 @@ public static class DbServices
                 MessageBox.Show($"Error retrieving hero: {ex.Message}");
                 return null;
             }
+        }
+    }
+
+
+    public static async Task AddHeroWinRatesInDBAxync()
+    {
+
+        using (var db = new ApplicationDBContext())
+        {
+            var counterPicks = db.CounterPickInfos;
+
+            if (!await counterPicks.AnyAsync(x => x.WinRateDate == DateTime.Now.Date))
+            {
+                counterPicks.AddRange(await Parsing.ParseCounterPicksInfoAsync());
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                if (counterPicks.Where(x => x.WinRateDate == DateTime.Now.Date).Count() < 15500)
+                {
+                    var existingCounterPicks = counterPicks.Where(x => x.WinRateDate == DateTime.Now.Date).Select(x => x.CounterPickInfoId).ToList();
+                    var newCounterPicks = counterPicks.Where(x => !existingCounterPicks.Contains(x.CounterPickInfoId)).ToList();
+
+                    if (newCounterPicks.Any())
+                    {
+                        await counterPicks.AddRangeAsync(newCounterPicks);
+                    }
+                    await db.SaveChangesAsync();
+                }
+            }
+        }
+    }
+    public static async Task<List<CounterPickInfo>> GetWinRatesAsync()
+    {
+        using (var db = new ApplicationDBContext())
+        {
+            return await db.CounterPickInfos.AsNoTracking().ToListAsync();
         }
     }
 

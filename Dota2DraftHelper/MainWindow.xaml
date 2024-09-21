@@ -7,7 +7,10 @@
         xmlns:fc="http://devpelux.github.io/fullcontrols"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
-        Title="Dota 2 Draft Helper" Height="550" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
+        Title="Dota 2 Draft Helper" Height="570" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Window.Resources>
     <Grid>
         <TabControl>
             <TabItem Header="Opponents' heroes" IsSelected="True">
@@ -16,16 +19,69 @@
                         <ColumnDefinition Width="260"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="490"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10">
+                    <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel>
-                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding FPick}"/>
-                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding SPick}"/>
-                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding ThPick}"/>
-                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding FoPick}"/>
-                            <fc:ComboBoxPlus ItemsSource="{Binding AllHeroes}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" Width="180" Height="30" Margin="10" SelectedItem="{Binding FifPick}"/>
+                            <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}"/>
+                            <Label Content="Hard Support"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                             Width="180" Height="30" Margin="10" SelectedItem="{Binding HSPick}"/>
+                            <Label Content="Support"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding Supports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                             Width="180" Height="30" Margin="10" SelectedItem="{Binding SPick}"/>
+                            <Label Content="Offlane"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding Offlaners}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                             Width="180" Height="30" Margin="10" SelectedItem="{Binding OffPick}"/>
+                            <Label Content="Carry"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding Carrys}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                             Width="180" Height="30" Margin="10" SelectedItem="{Binding CarPick}"/>
+                            <Label Content="Mid"/>
+                            <fc:ComboBoxPlus ItemsSource="{Binding Midds}" ToolTipService.Placement="Right" VerticalContentAlignment="Center"
+                                             Width="180" Height="30" Margin="10" SelectedItem="{Binding MidPick}"/>
                         </StackPanel>
                     </GroupBox>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                        <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <fc:ComboBoxItemPlus Content="Safe Lane (Pos 1)"/>
+                            <fc:ComboBoxItemPlus Content="Mid Lane (Pos 2)"/>
+                            <fc:ComboBoxItemPlus Content="Hard Lane (Pos 3)"/>
+                            <fc:ComboBoxItemPlus Content="Support (Pos 4)"/>
+                            <fc:ComboBoxItemPlus Content="Hard Support (Pos 5)"/>
+                        </fc:ComboBoxPlus>
+
+                        <WrapPanel>
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                    <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Lane pick">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding BestLanePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                    <TextBlock Text="{Binding BestLanePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </GroupBox>
+                        </WrapPanel>
+                    </StackPanel>
+
+                    <StackPanel  Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding IsProgressExecuting, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Label Content="Executing operations. Wait please..." HorizontalAlignment="Center"/>
+                        <ProgressBar Name="indeterminateProgressBar" IsIndeterminate="True" Height="15" Width="400">
+                            <ProgressBar.Style>
+                                <Style TargetType="ProgressBar">
+                                    <Setter Property="Foreground" Value="LightSkyBlue"/>
+                                </Style>
+                            </ProgressBar.Style>
+                        </ProgressBar>
+
+                    </StackPanel>
                 </Grid>
             </TabItem>
 

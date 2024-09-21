@@ -41,7 +41,7 @@ public partial class HeroViewModel : ObservableObject
         if (await DbServices.RemoveOwnHeroAsync(ownPick.HeroId, ownPick.LaneId))
         {
             MessageBox.Show($"{HeroName} was removed from your pick succesfully!", "Success", MessageBoxButton.OK,MessageBoxImage.Asterisk);
-            parentViewModel.SetUIAsync(Convert.ToUInt32(ownPick.LaneId));
+            parentViewModel.SetUIAsync(Convert.ToUInt32(ownPick.LaneId)-1);
             return;
         }
 

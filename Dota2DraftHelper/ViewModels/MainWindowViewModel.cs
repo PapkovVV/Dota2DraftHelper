@@ -8,7 +8,6 @@ using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -16,14 +15,27 @@ public partial class MainWindowViewModel : ObservableObject
 {
     [ObservableProperty] ObservableCollection<OwnPick> heroesFromPool = null!;// Heroes from own hero pool
     [ObservableProperty] ObservableCollection<HeroControl> heroesFromPoolUI = null!;
-    [ObservableProperty] ObservableCollection<ComboBoxItemPlus> allHeroes = null!;
+    [ObservableProperty] ObservableCollection<ComboBoxItemPlus> hardSupports = null!;
+    [ObservableProperty] ObservableCollection<ComboBoxItemPlus> supports = null!;
+    [ObservableProperty] ObservableCollection<ComboBoxItemPlus> offlaners = null!;
+    [ObservableProperty] ObservableCollection<ComboBoxItemPlus> carrys = null!;
+    [ObservableProperty] ObservableCollection<ComboBoxItemPlus> midds = null!;
     [ObservableProperty] uint selectedLane = 0;
+    [ObservableProperty] string bestPick = "";
 
-    [ObservableProperty] ComboBoxItemPlusWithInfo? fPick!;
+    [ObservableProperty] ComboBoxItemPlusWithInfo? hSPick;
     [ObservableProperty] ComboBoxItemPlusWithInfo? sPick;
-    [ObservableProperty] ComboBoxItemPlusWithInfo? thPick;
-    [ObservableProperty] ComboBoxItemPlusWithInfo? foPick;
-    [ObservableProperty] ComboBoxItemPlusWithInfo? fifPick;
+    [ObservableProperty] ComboBoxItemPlusWithInfo? offPick;
+    [ObservableProperty] ComboBoxItemPlusWithInfo? carPick;
+    [ObservableProperty] ComboBoxItemPlusWithInfo? midPick;
+
+    [ObservableProperty] bool isProgressExecuting = true;
+    [ObservableProperty] bool isUIAvailable;
+
+    [ObservableProperty] string bestAveragePick = "";
+    [ObservableProperty] string bestAveragePickInfo = "";
+    [ObservableProperty] string bestLanePick = "";
+    [ObservableProperty] string bestLanePickInfo = "";
     public MainWindowViewModel()
     {
         Init();
@@ -32,22 +44,60 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async void Init()// (OP)
     {
-        AllHeroes = new ObservableCollection<ComboBoxItemPlus>();
+        IsUIAvailable = false;
+
         await DbServices.AddHeroesInDBAsync();
         await CacheHeroes.GetHeroesAsync();
+
+        await DbServices.AddHeroWinRatesInDBAxync();
+        await CacheWinRates.GetCounterPicksAsync();
+
         await CacheLanes.GetLanesAsync();
         await GetHeroesInComboBox();
+
+        IsProgressExecuting = false;
+        IsUIAvailable = true;
     }
 
     private async Task GetHeroesInComboBox()
     {
         IEnumerable<Hero> dbHeroes = (await CacheHeroes.GetHeroesAsync()).OrderBy(h => h.Name);
 
+        HardSupports = new ObservableCollection<ComboBoxItemPlus>();
+        Supports = new ObservableCollection<ComboBoxItemPlus>();
+        Offlaners = new ObservableCollection<ComboBoxItemPlus>();
+        Carrys = new ObservableCollection<ComboBoxItemPlus>();
+        Midds = new ObservableCollection<ComboBoxItemPlus>();
+
         if (dbHeroes.Any())
         {
             foreach (var dbHero in dbHeroes)
             {
-                AllHeroes.Add(new ComboBoxItemPlusWithInfo()
+                HardSupports.Add(new ComboBoxItemPlusWithInfo()
+                {
+                    Content = dbHero.Name,
+                    AdditionalInfo = dbHero.Id,
+                    ToolTip = "You can write a hero name, just start typing..."
+                });
+                Supports.Add(new ComboBoxItemPlusWithInfo()
+                {
+                    Content = dbHero.Name,
+                    AdditionalInfo = dbHero.Id,
+                    ToolTip = "You can write a hero name, just start typing..."
+                });
+                Offlaners.Add(new ComboBoxItemPlusWithInfo()
+                {
+                    Content = dbHero.Name,
+                    AdditionalInfo = dbHero.Id,
+                    ToolTip = "You can write a hero name, just start typing..."
+                });
+                Carrys.Add(new ComboBoxItemPlusWithInfo()
+                {
+                    Content = dbHero.Name,
+                    AdditionalInfo = dbHero.Id,
+                    ToolTip = "You can write a hero name, just start typing..."
+                });
+                Midds.Add(new ComboBoxItemPlusWithInfo()
                 {
                     Content = dbHero.Name,
                     AdditionalInfo = dbHero.Id,
@@ -139,9 +189,226 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private void Refresh()
+    {
+        HSPick = null;
+        SPick= null;
+        OffPick= null;
+        CarPick= null;
+        MidPick= null;
+
+        BestAveragePick = null;
+        BestAveragePickInfo = null;
+        BestLanePickInfo = null;
+        BestLanePick = null;
+    }
+
     partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
     {
         SetUIAsync(newValue);
     }
 
+    partial void OnHSPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnSPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnOffPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnCarPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnMidPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+    private async void GetBestAgainsPick()
+    {
+        List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required winrates
+
+        if (winRates.Count > 0)
+        {
+            await SetBestAveragePickUI(winRates);
+            await SetBestLanePickUI(winRates);
+        }
+    }
+
+    private async Task<List<CounterPickInfo>> GetAllRequiredWinRatesAsync()
+    {
+        var counterPicks = await CacheWinRates.GetCounterPicksAsync(); //Get all winrates
+        var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); // Get own picks
+
+        List<int> enemyIds = new List<int>();
+
+        if (HSPick != null) enemyIds.Add(Convert.ToInt32(HSPick.AdditionalInfo));
+        if (SPick != null) enemyIds.Add(Convert.ToInt32(SPick.AdditionalInfo));
+        if (OffPick != null) enemyIds.Add(Convert.ToInt32(OffPick.AdditionalInfo));
+        if (CarPick != null) enemyIds.Add(Convert.ToInt32(CarPick.AdditionalInfo));
+        if (MidPick != null) enemyIds.Add(Convert.ToInt32(MidPick.AdditionalInfo));
+
+        counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) && x.WinRateDate == DateTime.Now.Date).ToList();
+
+        return counterPicks;
+    }
+
+    private async Task SetBestAveragePickUI(List<CounterPickInfo> winRates)
+    {
+
+        BestAveragePick = "";
+        BestAveragePickInfo = "";
+
+        string alternative = "";
+
+        var averageWinRates = winRates.GroupBy(x => x.PickId).Select(g => new
+        {
+            PickId = g.Key,
+            AverageWinRate = g.Average(x => x.WinRate)
+        }).OrderByDescending(x => x.AverageWinRate).Take(5).ToList();
+
+        var allHeroes = await CacheHeroes.GetHeroesAsync();
+
+        var bestPicks = averageWinRates
+                                .Select(cp => allHeroes.FirstOrDefault(hero => hero.Id == cp.PickId))
+                                .Where(hero => hero != null)
+                                .ToList();
+
+        for (int i = 1; i < bestPicks.Count; i++)
+        {
+            alternative = alternative + $"\n{bestPicks[i]!.Name}: {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+        }
+
+        BestAveragePick = bestPicks.First()!.Name;
+        BestAveragePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
+            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n" +
+            $"Other:" +
+            alternative;
+    }
+
+    private async Task SetBestLanePickUI(List<CounterPickInfo> counterPicks)
+    {
+        BestLanePick = "";
+        BestLanePickInfo = "";
+
+        string alternative = "";
+
+        switch (SelectedLane)
+        {
+            case 0:
+                {
+                    if (OffPick != null)
+                    {
+                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo)).ToList();
+                        counterPicks = counterPicks.OrderByDescending(x =>
+                        {
+                            if (OffPick != null && x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo))
+                            {
+                                return x.WinRate;
+                            }
+                            return 0;
+                        }).ToList();
+                    }
+                    
+                    break;
+                }
+
+            case 1:
+                {
+                    if (MidPick != null)
+                    {
+                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo)).ToList();
+                        counterPicks.OrderByDescending(x =>
+                        {
+                            if (MidPick != null && x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo))
+                            {
+                                return x.WinRate;
+                            }
+                            return 0;
+                        }).ToList();
+                    }
+
+                    break;
+                }
+            case 2:
+                {
+
+                    if (CarPick != null)
+                    {
+                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo)).ToList();
+                        counterPicks.OrderByDescending(x =>
+                         {
+                             if (CarPick != null && x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo))
+                             {
+                                 return x.WinRate;
+                             }
+                             return 0;
+                         }).ToList();
+                    }
+                    
+                    break;
+                }
+            case 3:
+                {
+                    if (HSPick != null)
+                    {
+                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo)).ToList();
+                        counterPicks.OrderByDescending(x =>
+                        {
+                            if (HSPick != null && x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo))
+                            {
+                                return x.WinRate;
+                            }
+                            return 0;
+                        }).ToList();
+                    }
+
+                    break;
+                }
+            case 4:
+                {
+                    if (SPick != null)
+                    {
+                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo)).ToList();
+                        counterPicks.OrderByDescending(x =>
+                        {
+                            if (SPick != null && x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo))
+                            {
+                                return x.WinRate;
+                            }
+                            return 0;
+                        }).ToList();
+                    }
+
+                    break;
+                }
+        }
+
+        var allHeroes = await CacheHeroes.GetHeroesAsync();
+
+        var bestPicks = counterPicks
+                                .Select(cp => allHeroes.FirstOrDefault(hero => hero.Id == cp.PickId))
+                                .Where(hero => hero != null)
+                                .ToList();
+
+
+        for (int i = 1; i < bestPicks.Count; i++)
+        {
+            alternative = alternative + $"\n{bestPicks[i]!.Name}: {counterPicks.ElementAt(i).WinRate:F2}%";
+        }
+
+        BestLanePick = bestPicks.First()!.Name;
+        BestLanePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
+                           $"Lane WinRate: {counterPicks.First().WinRate:F2}%\n\n" +
+                           $"Other:" + alternative;
+    }
 }

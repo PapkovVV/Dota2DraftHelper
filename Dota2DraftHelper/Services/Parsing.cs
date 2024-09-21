@@ -1,15 +1,13 @@
 ﻿using Dota2DraftHelper.Models;
 using HtmlAgilityPack;
-using System;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Windows;
 
 namespace Dota2DraftHelper.Services;
 
 public static class Parsing
 {
-    private static HtmlWeb htmlWeb = new HtmlWeb(); 
+    private static HtmlWeb htmlWeb = new HtmlWeb();
+    private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(5);
 
     public static async Task<List<Hero>> ParseHeroesInfoAsync() // Get the list of heroes (OP)
     {
@@ -31,10 +29,10 @@ public static class Parsing
 
                     var heroName = heroInfo.SelectSingleNode(".//div");
                     var heroFaceit = heroInfo.SelectSingleNode(".//div[@class='tw-text-xs tw-text-secondary']");
-                    
+
                     if (heroName != null)
                     {
-                        newHero.Name = heroName.InnerText.Replace("&#x27;","");
+                        newHero.Name = heroName.InnerText.Replace("&#x27;", "");
                     }
 
                     if (heroFaceit != null)
@@ -57,5 +55,92 @@ public static class Parsing
         }
 
         return heroes;
+    }
+
+    public static async Task<List<CounterPickInfo>> ParseCounterPicksInfoAsync()
+    {
+        var heroes = await CacheHeroes.GetHeroesAsync();
+
+        var tasks = heroes.Select(hero => ParseSingleCounterPickInfo(hero));
+
+        var results = await Task.WhenAll(tasks);
+
+        var combinedList = results.SelectMany(list => list).ToList();
+
+        return combinedList;
+    }
+
+    private static async Task<List<CounterPickInfo>> ParseSingleCounterPickInfo(Hero hero)
+    {
+        await semaphore.WaitAsync();
+
+        List<CounterPickInfo> result = new List<CounterPickInfo>();
+
+        try
+        {
+            string requiredHeroName = hero.Name.ToLower().Replace(" ", "-");
+            string heroURL = $"https://www.dotabuff.com/heroes/{requiredHeroName}/counters";
+
+            var doc = await htmlWeb.LoadFromWebAsync(heroURL).ConfigureAwait(false);
+
+            if (doc != null)
+            {
+                var counterPicksTable = doc.DocumentNode.SelectSingleNode("//table[@class='sortable']");
+
+                if (counterPicksTable != null)
+                {
+                    var counterPicksInfo = counterPicksTable.SelectNodes("//tr[@data-link-to]");
+
+                    if (counterPicksInfo != null)
+                    {
+                        foreach (var counterPickInfo in counterPicksInfo)
+                        {
+                            var name = GetCounterPickName(counterPickInfo);
+                            var winRate = GetCounterPickWinRate(counterPickInfo);
+
+                            var enemy = new CounterPickInfo() {PickId = hero.Id,
+                                CounterPickId = (await CacheHeroes.GetHeroesAsync()).FirstOrDefault(x => x.Name.Equals(name))!.Id, 
+                                WinRate = winRate, WinRateDate = DateTime.Now.Date};
+
+                            result.Add(enemy);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error loading {ex.Message}");
+        }
+        finally
+        {
+            semaphore.Release(); // Освобождаем семафор
+        }
+
+        return result;
+    }
+
+    private static string GetCounterPickName(HtmlNode counterPickInfo)
+    {
+        var nameHtml = counterPickInfo!.SelectSingleNode(".//td[2]");
+
+        if (nameHtml != null)
+        {
+            return nameHtml.InnerText.Replace("&#39;","");
+        }
+
+        return "Undefined";
+    }
+
+    private static decimal GetCounterPickWinRate(HtmlNode counterPickInfo)
+    {
+        var winRateHtml = counterPickInfo.SelectSingleNode(".//td[4]");
+
+        if (winRateHtml != null)
+        {
+            return decimal.Parse(winRateHtml.InnerText.Replace("%", "").Replace(".", ",").Trim());
+        }
+
+        return 0.00m;
     }
 }

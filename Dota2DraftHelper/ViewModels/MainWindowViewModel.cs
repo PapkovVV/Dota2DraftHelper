@@ -8,6 +8,7 @@ using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -319,103 +320,112 @@ public partial class MainWindowViewModel : ObservableObject
 
         string alternative = "";
 
-        switch (SelectedLane)
+        if (!IsAllHeroes)
         {
-            case 0:
-                {
-                    if (OffPick != null)
+            switch (SelectedLane)
+            {
+                case 0:
                     {
-                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo)).ToList();
-                        counterPicks = counterPicks.OrderByDescending(x =>
+                        if (OffPick != null)
                         {
-                            if (OffPick != null && x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo))
+                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo)).ToList();
+                            counterPicks = counterPicks.OrderByDescending(x =>
                             {
-                                return x.WinRate;
-                            }
-                            return 0;
-                        }).ToList();
+                                if (OffPick != null && x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo))
+                                {
+                                    return x.WinRate;
+                                }
+                                return 0;
+                            }).ToList();
+                        }
+
+                        break;
                     }
 
-                    break;
-                }
-
-            case 1:
-                {
-                    if (MidPick != null)
+                case 1:
                     {
-                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo)).ToList();
-                        counterPicks.OrderByDescending(x =>
+                        if (MidPick != null)
                         {
-                            if (MidPick != null && x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo))
+                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo)).ToList();
+                            counterPicks.OrderByDescending(x =>
                             {
-                                return x.WinRate;
-                            }
-                            return 0;
-                        }).ToList();
+                                if (MidPick != null && x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo))
+                                {
+                                    return x.WinRate;
+                                }
+                                return 0;
+                            }).ToList();
+                        }
+
+                        break;
                     }
-
-                    break;
-                }
-            case 2:
-                {
-
-                    if (CarPick != null)
+                case 2:
                     {
-                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo)).ToList();
-                        counterPicks.OrderByDescending(x =>
-                         {
-                             if (CarPick != null && x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo))
-                             {
-                                 return x.WinRate;
-                             }
-                             return 0;
-                         }).ToList();
-                    }
 
-                    break;
-                }
-            case 3:
-                {
-                    if (HSPick != null)
-                    {
-                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo)).ToList();
-                        counterPicks.OrderByDescending(x =>
+                        if (CarPick != null)
                         {
-                            if (HSPick != null && x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo))
+                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo)).ToList();
+                            counterPicks.OrderByDescending(x =>
                             {
-                                return x.WinRate;
-                            }
-                            return 0;
-                        }).ToList();
-                    }
+                                if (CarPick != null && x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo))
+                                {
+                                    return x.WinRate;
+                                }
+                                return 0;
+                            }).ToList();
+                        }
 
-                    break;
-                }
-            case 4:
-                {
-                    if (SPick != null)
+                        break;
+                    }
+                case 3:
                     {
-                        counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo)).ToList();
-                        counterPicks.OrderByDescending(x =>
+                        if (HSPick != null)
                         {
-                            if (SPick != null && x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo))
+                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo)).ToList();
+                            counterPicks.OrderByDescending(x =>
                             {
-                                return x.WinRate;
-                            }
-                            return 0;
-                        }).ToList();
-                    }
+                                if (HSPick != null && x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo))
+                                {
+                                    return x.WinRate;
+                                }
+                                return 0;
+                            }).ToList();
+                        }
 
-                    break;
-                }
+                        break;
+                    }
+                case 4:
+                    {
+                        if (SPick != null)
+                        {
+                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo)).ToList();
+                            counterPicks.OrderByDescending(x =>
+                            {
+                                if (SPick != null && x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo))
+                                {
+                                    return x.WinRate;
+                                }
+                                return 0;
+                            }).ToList();
+                        }
+
+                        break;
+                    }
+            }
+
         }
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
-        var bestPicks = counterPicks.Take(5)
+        var bestPicks = counterPicks.Take(10)
                                 .Select(cp => allHeroes.FirstOrDefault(hero => hero.Id == cp.PickId))
-                                .Where(hero => hero != null)
+                                .Where(hero => hero != null).Distinct()
                                 .ToList();
+
+        foreach (var item in bestPicks)
+        {
+            MessageBox.Show($"{item.Name} {item.Faceit}");
+        }
 
 
         for (int i = 1; i < bestPicks.Count; i++)

@@ -181,32 +181,6 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    private void AddHeroInPool() // (OP)
-    {
-        AddHeroDialog addHeroDialog = new AddHeroDialog();
-
-        if (addHeroDialog.ShowDialog() == true)
-        {
-            SetUIAsync(SelectedLane);
-        }
-    }
-
-    [RelayCommand]
-    private void Refresh()
-    {
-        HSPick = null;
-        SPick= null;
-        OffPick= null;
-        CarPick= null;
-        MidPick= null;
-
-        BestAveragePick = null;
-        BestAveragePickInfo = null;
-        WorstAveragePick = null;
-        WorstAveragePickInfo = null;
-    }
-
     partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
     {
         SetUIAsync(newValue);
@@ -344,4 +318,63 @@ public partial class MainWindowViewModel : ObservableObject
             $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n" +
             $"Other:" + alternative;
     }
+
+    #region Events
+
+    [RelayCommand]
+    private void AddHeroInPool() // (OP)
+    {
+        AddHeroDialog addHeroDialog = new AddHeroDialog();
+
+        if (addHeroDialog.ShowDialog() == true)
+        {
+            SetUIAsync(SelectedLane);
+        }
+    }
+
+    [RelayCommand]
+    private void Refresh()
+    {
+        HSPick = null;
+        SPick= null;
+        OffPick= null;
+        CarPick= null;
+        MidPick= null;
+
+        BestAveragePick = null;
+        BestAveragePickInfo = null;
+        WorstAveragePick = null;
+        WorstAveragePickInfo = null;
+    }
+
+    [RelayCommand]
+    private void ClearHardSupport()
+    {
+        HSPick = null;
+    }
+
+    [RelayCommand]
+    private void ClearSupport()
+    {
+        SPick = null;
+    }
+
+    [RelayCommand]
+    private void ClearOfflane()
+    {
+        OffPick = null;
+    }
+
+    [RelayCommand]
+    private void ClearCarry()
+    {
+        CarPick = null;
+    }
+
+    [RelayCommand]
+    private void ClearMid()
+    {
+        MidPick = null;
+    }
+    #endregion Events
 }

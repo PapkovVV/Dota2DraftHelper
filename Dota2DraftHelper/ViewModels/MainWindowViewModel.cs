@@ -49,7 +49,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         IsUIAvailable = false;
 
-        IsAllHeroes = JSONServices.LoadSettings();
+        //IsAllHeroes = JSONServices.LoadSettings();
 
         await DbServices.AddHeroesInDBAsync();
         await CacheHeroes.GetHeroesAsync();
@@ -241,7 +241,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)
     {
-        JSONServices.SaveSettings(newValue);
+        //JSONServices.SaveSettings(newValue);
         Refresh();
     }
 

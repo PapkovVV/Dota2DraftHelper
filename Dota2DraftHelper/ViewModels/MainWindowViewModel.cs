@@ -395,7 +395,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
-        var bestPicks = counterPicks
+        var bestPicks = counterPicks.Take(5)
                                 .Select(cp => allHeroes.FirstOrDefault(hero => hero.Id == cp.PickId))
                                 .Where(hero => hero != null)
                                 .ToList();

@@ -32,6 +32,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] bool isProgressExecuting = true;
     [ObservableProperty] bool isUIAvailable;
     [ObservableProperty] bool isAllHeroes;
+    [ObservableProperty] bool isAPAvailable = false;
 
     [ObservableProperty] string bestAveragePick = "";
     [ObservableProperty] string bestAveragePickInfo = "";
@@ -181,58 +182,28 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
-    {
-        SetUIAsync(newValue);
-    }
-
-    partial void OnHSPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
-    {
-        GetBestAgainsPick();
-    }
-
-    partial void OnSPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
-    {
-        GetBestAgainsPick();
-    }
-
-    partial void OnOffPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
-    {
-        GetBestAgainsPick();
-    }
-
-    partial void OnCarPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
-    {
-        GetBestAgainsPick();
-    }
-
-    partial void OnMidPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
-    {
-        GetBestAgainsPick();
-    }
-
-    partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)//(OP)
-    {
-        JSONServices.SaveSettings(newValue);
-        Refresh();
-    }
-
     private async void GetBestAgainsPick()
     {
-        List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required winrates
-
-        if (winRates.Count > 0)
+        if (HSPick != null || SPick != null || OffPick != null || CarPick != null || MidPick != null)
         {
-            await SetBestAveragePickUI(winRates);
-            await SetWorstAveragePickUI(winRates);
+            List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required winrates
+
+            if (winRates.Count > 0)
+            {
+                IsAPAvailable = true;
+                await SetBestAveragePickUI(winRates);
+                await SetWorstAveragePickUI(winRates);
+            }
+        }
+        else
+        {
+            Refresh();
         }
     }
 
     private async Task<List<CounterPickInfo>> GetAllRequiredWinRatesAsync()
     {
         var counterPicks = await CacheWinRates.GetCounterPicksAsync(); //Get all winrates
-
-        var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); // Get own picks
 
         List<int> enemyIds = new List<int>();
 
@@ -242,17 +213,23 @@ public partial class MainWindowViewModel : ObservableObject
         if (CarPick != null) enemyIds.Add(Convert.ToInt32(CarPick.AdditionalInfo));
         if (MidPick != null) enemyIds.Add(Convert.ToInt32(MidPick.AdditionalInfo));
 
-        if (!IsAllHeroes)
+        if (enemyIds.Count > 0)
         {
-            counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) &&
-            x.WinRateDate == DateTime.Now.Date &&
-                            x.CounterPickId != x.PickId).ToList();
+            if (!IsAllHeroes)
+            {
+                var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); // Get own picks
+
+                counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) &&
+                x.WinRateDate == DateTime.Now.Date &&
+                                x.CounterPickId != x.PickId).ToList();
+            }
+            else
+            {
+                counterPicks = counterPicks.Where(x => enemyIds.Contains(x.CounterPickId) && !enemyIds.Contains(x.PickId) && x.WinRateDate == DateTime.Now.Date &&
+                                x.CounterPickId != x.PickId).ToList();
+            }
         }
-        else
-        {
-            counterPicks = counterPicks.Where(x => enemyIds.Contains(x.CounterPickId) && !enemyIds.Contains(x.PickId) && x.WinRateDate == DateTime.Now.Date &&
-                            x.CounterPickId != x.PickId).ToList();
-        }
+        
 
         return counterPicks;
     }
@@ -321,6 +298,42 @@ public partial class MainWindowViewModel : ObservableObject
 
     #region Events
 
+    partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
+    {
+        SetUIAsync(newValue);
+    }
+
+    partial void OnHSPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnSPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnOffPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnCarPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnMidPickChanged(ComboBoxItemPlusWithInfo? oldValue, ComboBoxItemPlusWithInfo? newValue)
+    {
+        GetBestAgainsPick();
+    }
+
+    partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)//(OP)
+    {
+        JSONServices.SaveSettings(newValue);
+        Refresh();
+    }
+
     [RelayCommand]
     private void AddHeroInPool() // (OP)
     {
@@ -335,6 +348,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void Refresh()
     {
+        IsAPAvailable = false;
+
         HSPick = null;
         SPick= null;
         OffPick= null;

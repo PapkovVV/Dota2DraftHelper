@@ -25,8 +25,9 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <StackPanel>
+                    <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10" 
+                              Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}" Height="460">
+                        <StackPanel Height="auto">
                             <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}"/>
                             <Label Content="Hard Support"/>
                             <StackPanel Orientation="Horizontal">
@@ -84,14 +85,14 @@
                                          Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                         <WrapPanel Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick" Margin="10">
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick" Margin="10" Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
                                     <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick" Margin="150 10 10 10">
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick" Margin="150 10 10 10" Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
                                     <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center"/>

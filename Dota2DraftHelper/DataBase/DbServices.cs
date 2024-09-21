@@ -89,7 +89,7 @@ public static class DbServices
     {
         using (var db = new ApplicationDBContext())
         {
-            return await  db.CounterPickInfos.Include(c => c.PickHero).Include(c => c.CounterPickHero).ToListAsync();
+            return await  db.CounterPickInfos.Where(x => x.WinRateDate == DateTime.Now.Date).Include(c => c.PickHero).Include(c => c.CounterPickHero).ToListAsync();
         }
     }
 

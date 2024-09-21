@@ -4,12 +4,10 @@ using Dota2DraftHelper.DataBase;
 using Dota2DraftHelper.Expansion_classes;
 using Dota2DraftHelper.Models;
 using Dota2DraftHelper.Services;
-using Dota2DraftHelper.Services.JSON;
 using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -48,8 +46,6 @@ public partial class MainWindowViewModel : ObservableObject
     private async void Init()// (OP)
     {
         IsUIAvailable = false;
-
-        //IsAllHeroes = JSONServices.LoadSettings();
 
         await DbServices.AddHeroesInDBAsync();
         await CacheHeroes.GetHeroesAsync();
@@ -241,7 +237,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)
     {
-        //JSONServices.SaveSettings(newValue);
         Refresh();
     }
 

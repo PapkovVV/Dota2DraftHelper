@@ -31,7 +31,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] bool isProgressExecuting = true;
     [ObservableProperty] bool isUIAvailable;
-    [ObservableProperty] bool isAllHeroes = false;
+    [ObservableProperty] bool isAllHeroes;
 
     [ObservableProperty] string bestAveragePick = "";
     [ObservableProperty] string bestAveragePickInfo = "";
@@ -55,6 +55,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         await CacheLanes.GetLanesAsync();
         await GetHeroesInComboBox();
+
+        IsAllHeroes = await JSONServices.LoadSettingsAsync();
 
         IsProgressExecuting = false;
         IsUIAvailable = true;
@@ -235,8 +237,9 @@ public partial class MainWindowViewModel : ObservableObject
         GetBestAgainsPick();
     }
 
-    partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)
+    partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)//(OP)
     {
+        JSONServices.SaveSettings(newValue);
         Refresh();
     }
 

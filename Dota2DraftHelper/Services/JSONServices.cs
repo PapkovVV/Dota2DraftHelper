@@ -15,15 +15,15 @@ public class JSONServices
 
         string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
 
-        File.WriteAllText(jsonFilePath, json);
+        File.WriteAllTextAsync(jsonFilePath, json);
     }
-    public static bool LoadSettings() //Load settings from JSON
+    public static async Task<bool> LoadSettingsAsync() //Load settings from JSON
     {
         if (File.Exists(jsonFilePath))
         {
-            string json = File.ReadAllText(jsonFilePath);
+            string json = await File.ReadAllTextAsync(jsonFilePath);
 
-            Settings settings = JsonConvert.DeserializeObject<Settings>(json);
+            Settings settings = JsonConvert.DeserializeObject<Settings>(json)!;
 
             return settings.IsAllHeroes;
         }

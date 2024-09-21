@@ -25,8 +25,4 @@
     <Resource Include="Images\Dota2DraftHelperIcon.ico" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Release\" />
-  </ItemGroup>
-
 </Project>

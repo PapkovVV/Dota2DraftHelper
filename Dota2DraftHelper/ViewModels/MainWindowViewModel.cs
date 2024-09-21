@@ -4,6 +4,7 @@ using Dota2DraftHelper.DataBase;
 using Dota2DraftHelper.Expansion_classes;
 using Dota2DraftHelper.Models;
 using Dota2DraftHelper.Services;
+using Dota2DraftHelper.Services.JSON;
 using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
@@ -47,6 +48,8 @@ public partial class MainWindowViewModel : ObservableObject
     private async void Init()// (OP)
     {
         IsUIAvailable = false;
+
+        IsAllHeroes = JSONServices.LoadSettings();
 
         await DbServices.AddHeroesInDBAsync();
         await CacheHeroes.GetHeroesAsync();
@@ -238,9 +241,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)
     {
+        JSONServices.SaveSettings(newValue);
         Refresh();
     }
-
 
     private async void GetBestAgainsPick()
     {
@@ -293,7 +296,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             PickId = g.Key,
             AverageWinRate = g.Sum(x => x.WinRate)
-        }).OrderBy(x => x.AverageWinRate).Take(15).ToList();
+        }).OrderBy(x => x.AverageWinRate).Take(25).ToList();
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
@@ -324,7 +327,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             PickId = g.Key,
             AverageWinRate = g.Sum(x => x.WinRate)
-        }).OrderByDescending(x => x.AverageWinRate).Take(15).ToList();
+        }).OrderByDescending(x => x.AverageWinRate).Take(25).ToList();
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
@@ -333,7 +336,7 @@ public partial class MainWindowViewModel : ObservableObject
                                 .Where(hero => hero != null)
                                 .ToList();
 
-        for (int i = 1; i < worstPicks.Count; i++)
+        for (int i = 1; i < worstPicks.Count - 1; i++)
         {
             alternative = alternative + $"\n{worstPicks[i]!.Name}: {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
         }

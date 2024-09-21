@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Dota2DraftHelper"
         xmlns:fc="http://devpelux.github.io/fullcontrols"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
-        Title="Dota 2 Draft Helper" Height="600" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResize"
+        Title="Dota 2 Draft Helper" Height="720" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Window.Resources>
@@ -20,7 +20,8 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="490"/>
+                        <RowDefinition Height="610"/>
+                        <RowDefinition Height="610"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
@@ -58,17 +59,17 @@
                                          Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                         <WrapPanel Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick">
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick" Margin="10">
                                 <StackPanel>
                                     <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick">
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick" Margin="150 10 10 10">
                                 <StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
-                                    <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </GroupBox>
                         </WrapPanel>

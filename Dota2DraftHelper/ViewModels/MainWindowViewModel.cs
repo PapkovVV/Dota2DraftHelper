@@ -8,7 +8,6 @@ using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -36,8 +35,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] string bestAveragePick = "";
     [ObservableProperty] string bestAveragePickInfo = "";
-    [ObservableProperty] string bestLanePick = "";
-    [ObservableProperty] string bestLanePickInfo = "";
     public MainWindowViewModel()
     {
         Init();
@@ -241,7 +238,6 @@ public partial class MainWindowViewModel : ObservableObject
         Refresh();
     }
 
-
     private async void GetBestAgainsPick()
     {
         List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required winrates
@@ -249,10 +245,8 @@ public partial class MainWindowViewModel : ObservableObject
         if (winRates.Count > 0)
         {
             await SetBestAveragePickUI(winRates);
-            await SetBestLanePickUI(winRates);
         }
     }
-
     private async Task<List<CounterPickInfo>> GetAllRequiredWinRatesAsync()
     {
         var counterPicks = await CacheWinRates.GetCounterPicksAsync(); //Get all winrates
@@ -313,129 +307,4 @@ public partial class MainWindowViewModel : ObservableObject
             $"Other:" + alternative;
     }
 
-    private async Task SetBestLanePickUI(List<CounterPickInfo> counterPicks)
-    {
-        BestLanePick = "";
-        BestLanePickInfo = "";
-
-        string alternative = "";
-
-        if (!IsAllHeroes)
-        {
-            switch (SelectedLane)
-            {
-                case 0:
-                    {
-                        if (OffPick != null)
-                        {
-                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo)).ToList();
-                            counterPicks = counterPicks.OrderByDescending(x =>
-                            {
-                                if (OffPick != null && x.CounterPickId == Convert.ToInt32(OffPick.AdditionalInfo))
-                                {
-                                    return x.WinRate;
-                                }
-                                return 0;
-                            }).ToList();
-                        }
-
-                        break;
-                    }
-
-                case 1:
-                    {
-                        if (MidPick != null)
-                        {
-                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo)).ToList();
-                            counterPicks.OrderByDescending(x =>
-                            {
-                                if (MidPick != null && x.CounterPickId == Convert.ToInt32(MidPick.AdditionalInfo))
-                                {
-                                    return x.WinRate;
-                                }
-                                return 0;
-                            }).ToList();
-                        }
-
-                        break;
-                    }
-                case 2:
-                    {
-
-                        if (CarPick != null)
-                        {
-                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo)).ToList();
-                            counterPicks.OrderByDescending(x =>
-                            {
-                                if (CarPick != null && x.CounterPickId == Convert.ToInt32(CarPick.AdditionalInfo))
-                                {
-                                    return x.WinRate;
-                                }
-                                return 0;
-                            }).ToList();
-                        }
-
-                        break;
-                    }
-                case 3:
-                    {
-                        if (HSPick != null)
-                        {
-                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo)).ToList();
-                            counterPicks.OrderByDescending(x =>
-                            {
-                                if (HSPick != null && x.CounterPickId == Convert.ToInt32(HSPick.AdditionalInfo))
-                                {
-                                    return x.WinRate;
-                                }
-                                return 0;
-                            }).ToList();
-                        }
-
-                        break;
-                    }
-                case 4:
-                    {
-                        if (SPick != null)
-                        {
-                            counterPicks = counterPicks.Where(x => x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo)).ToList();
-                            counterPicks.OrderByDescending(x =>
-                            {
-                                if (SPick != null && x.CounterPickId == Convert.ToInt32(SPick.AdditionalInfo))
-                                {
-                                    return x.WinRate;
-                                }
-                                return 0;
-                            }).ToList();
-                        }
-
-                        break;
-                    }
-            }
-
-        }
-
-        var allHeroes = await CacheHeroes.GetHeroesAsync();
-
-        var bestPicks = counterPicks.Take(10)
-                                .Select(cp => allHeroes.FirstOrDefault(hero => hero.Id == cp.PickId))
-                                .Where(hero => hero != null).Distinct()
-                                .ToList();
-
-        foreach (var item in bestPicks)
-        {
-            MessageBox.Show($"{item.Name} {item.Faceit}");
-        }
-
-
-        for (int i = 1; i < bestPicks.Count; i++)
-        {
-            alternative = alternative + $"\n{bestPicks[i]!.Name}: {counterPicks.ElementAt(i).WinRate:F2}%";
-        }
-
-        BestLanePick = bestPicks.First()!.Name;
-        BestLanePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
-                           $"Lane WinRate: {counterPicks.First().WinRate:F2}%\n\n" +
-                           $"Other:" + alternative;
-    }
 }

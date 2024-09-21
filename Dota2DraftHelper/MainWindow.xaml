@@ -54,7 +54,8 @@
                             <fc:ComboBoxItemPlus Content="Hard Support (Pos 5)"/>
                         </fc:ComboBoxPlus>
 
-                        <fc:CheckBoxPlus HorizontalAlignment="Right" Content="Use all heroes" FlowDirection="RightToLeft" Margin="0 0 20 0" IsChecked="{Binding IsAllHeroes}"/>
+                        <fc:CheckBoxPlus HorizontalAlignment="Right" Content="Use all heroes" FlowDirection="RightToLeft" Margin="0 0 20 0" IsChecked="{Binding IsAllHeroes}" 
+                                         Visibility="{Binding IsProgressExecuting, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                         <WrapPanel Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                             <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick">
@@ -63,17 +64,10 @@
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </GroupBox>
-
-                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Lane pick">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding BestLanePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
-                                    <TextBlock Text="{Binding BestLanePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </GroupBox>
                         </WrapPanel>
                     </StackPanel>
 
-                    <StackPanel  Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding IsProgressExecuting, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel  Grid.Row="1" Grid.ColumnSpan="2">
                         <Label Content="Executing operations. Wait please..." HorizontalAlignment="Center"/>
                         <ProgressBar Name="indeterminateProgressBar" IsIndeterminate="True" Height="15" Width="400">
                             <ProgressBar.Style>

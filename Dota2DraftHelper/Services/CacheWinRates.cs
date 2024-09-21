@@ -10,10 +10,7 @@ public class CacheWinRates
     {
         if (_counterPicks == null)
         {
-            using (var db = new ApplicationDBContext())
-            {
-                _counterPicks = await DbServices.GetWinRatesAsync();
-            }
+            _counterPicks = await DbServices.GetWinRatesAsync();
         }
 
         return _counterPicks;

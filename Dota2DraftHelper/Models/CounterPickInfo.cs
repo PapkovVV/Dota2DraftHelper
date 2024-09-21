@@ -11,5 +11,6 @@ public class CounterPickInfo
 
     [Column(TypeName = "DATE")]
     public DateTime WinRateDate { get; set; }
-
+    public Hero PickHero { get; set; } 
+    public Hero CounterPickHero { get; set; } 
 }

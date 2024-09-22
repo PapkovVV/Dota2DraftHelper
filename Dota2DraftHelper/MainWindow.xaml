@@ -4,12 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dota2DraftHelper"
+        xmlns:ser="clr-namespace:Dota2DraftHelper.Services"
         xmlns:fc="http://devpelux.github.io/fullcontrols"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" ResizeMode="CanResize"
         Title="Dota 2 Draft Helper" Height="720" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <ser:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
     </Window.Resources>
     <Grid>
         <TabControl>
@@ -25,52 +27,57 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10" 
-                              Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}" Height="460">
-                        <StackPanel Height="auto">
-                            <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}"/>
-                            <Label Content="Hard Support"/>
-                            <StackPanel Orientation="Horizontal">
-                                <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                    <StackPanel>
+                        <fc:CheckBoxPlus Grid.Column="0" HorizontalAlignment="Left" Content="Use all heroes" FlowDirection="RightToLeft" Margin="20" IsChecked="{Binding IsAllHeroes}" 
+                                         Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                        <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10" 
+                              Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}" Height="450">
+                            <StackPanel Height="auto">
+                                <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}"/>
+                                <Label Content="Hard Support"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                              Width="155" Height="30" Margin="10" SelectedItem="{Binding HSPick}"/>
-                                <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearHardSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
-                                    <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </fc:ButtonPlus>
-                            </StackPanel>
-                            <Label Content="Support"/>
-                            <StackPanel Orientation="Horizontal">
-                                <fc:ComboBoxPlus ItemsSource="{Binding Supports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearHardSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
+                                        <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </fc:ButtonPlus>
+                                </StackPanel>
+                                <Label Content="Support"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <fc:ComboBoxPlus ItemsSource="{Binding Supports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                              Width="155" Height="30" Margin="10" SelectedItem="{Binding SPick}"/>
-                                <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
-                                    <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </fc:ButtonPlus>
-                            </StackPanel>
-                            <Label Content="Offlane"/>
-                            <StackPanel Orientation="Horizontal">
-                                <fc:ComboBoxPlus ItemsSource="{Binding Offlaners}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
+                                        <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </fc:ButtonPlus>
+                                </StackPanel>
+                                <Label Content="Offlane"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <fc:ComboBoxPlus ItemsSource="{Binding Offlaners}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                                 Width="155" Height="30" Margin="10" SelectedItem="{Binding OffPick}"/>
-                                <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearOfflaneCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
-                                    <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </fc:ButtonPlus>
-                            </StackPanel>
-                            <Label Content="Carry"/>
-                            <StackPanel Orientation="Horizontal">
-                                <fc:ComboBoxPlus ItemsSource="{Binding Carrys}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearOfflaneCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
+                                        <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </fc:ButtonPlus>
+                                </StackPanel>
+                                <Label Content="Carry"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <fc:ComboBoxPlus ItemsSource="{Binding Carrys}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                                 Width="155" Height="30" Margin="10" SelectedItem="{Binding CarPick}"/>
-                                <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearCarryCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
-                                    <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </fc:ButtonPlus>
-                            </StackPanel>
-                            <Label Content="Mid"/>
-                            <StackPanel Orientation="Horizontal">
-                                <fc:ComboBoxPlus ItemsSource="{Binding Midds}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearCarryCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
+                                        <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </fc:ButtonPlus>
+                                </StackPanel>
+                                <Label Content="Mid"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <fc:ComboBoxPlus ItemsSource="{Binding Midds}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                                 Width="155" Height="30" Margin="10" SelectedItem="{Binding MidPick}"/>
-                                <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearMidCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
-                                    <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </fc:ButtonPlus>
+                                    <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearMidCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
+                                        <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </fc:ButtonPlus>
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                    </GroupBox>
+                        </GroupBox>
+                    </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
                         <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -81,24 +88,58 @@
                             <fc:ComboBoxItemPlus Content="Hard Support (Pos 5)"/>
                         </fc:ComboBoxPlus>
 
-                        <fc:CheckBoxPlus HorizontalAlignment="Right" Content="Use all heroes" FlowDirection="RightToLeft" Margin="0 0 20 0" IsChecked="{Binding IsAllHeroes}" 
-                                         Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                        <WrapPanel Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick" Margin="10" Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="30 -5 0 0" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+                            
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick"  Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
                                     <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <ListBox ItemsSource="{Binding BestAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding WinRate}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Setter Property="Height" Value="45" />
+                                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                        </ListBox>
                                 </StackPanel>
                             </GroupBox>
 
-                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick" Margin="150 10 10 10" Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick" Margin="70 0 0 0" Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
-                                    <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <ListBox ItemsSource="{Binding WorstAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding WinRate}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Height" Value="45" />
+                                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
+                                    </ListBox>
                                 </StackPanel>
                             </GroupBox>
-                        </WrapPanel>
+                        </StackPanel>
                     </StackPanel>
 
                     <StackPanel  Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding IsProgressExecuting, Converter={StaticResource BoolToVisibilityConverter}}">

@@ -20,6 +20,8 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> offlaners = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> carrys = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> midds = null!;
+    [ObservableProperty] ObservableCollection<Hero> bestAlternativeHeroes = null!;
+    [ObservableProperty] ObservableCollection<Hero> worstAlternativeHeroes = null!;
     [ObservableProperty] uint selectedLane = 0;
     [ObservableProperty] string bestPick = "";
 
@@ -238,8 +240,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         BestAveragePick = "";
         BestAveragePickInfo = "";
-
-        string alternative = "";
+        BestAlternativeHeroes = new ObservableCollection<Hero>();
 
         var averageWinRates = winRates.GroupBy(x => x.PickId).Select(g => new
         {
@@ -256,21 +257,20 @@ public partial class MainWindowViewModel : ObservableObject
 
         for (int i = 1; i < bestPicks.Count; i++)
         {
-            alternative = alternative + $"\n{bestPicks[i]!.Name}: {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+            bestPicks[i]!.WinRate = $": {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+            BestAlternativeHeroes.Add(bestPicks[i]!);
         }
 
         BestAveragePick = bestPicks.First()!.Name;
         BestAveragePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
-            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n" +
-            $"Other:" + alternative;
+            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
     }
 
     private async Task SetWorstAveragePickUI(List<CounterPickInfo> winRates)
     {
         WorstAveragePick = "";
         WorstAveragePickInfo = "";
-
-        string alternative = "";
+        WorstAlternativeHeroes = new ObservableCollection<Hero>();
 
         var averageWinRates = winRates.GroupBy(x => x.PickId).Select(g => new
         {
@@ -285,15 +285,15 @@ public partial class MainWindowViewModel : ObservableObject
                                 .Where(hero => hero != null)
                                 .ToList();
 
-        for (int i = 1; i < worstPicks.Count - 1; i++)
+        for (int i = 1; i < worstPicks.Count; i++)
         {
-            alternative = alternative + $"\n{worstPicks[i]!.Name}: {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+            worstPicks[i]!.WinRate = $": {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+            WorstAlternativeHeroes.Add(worstPicks[i]!);
         }
 
         WorstAveragePick = worstPicks.First()!.Name;
         WorstAveragePickInfo = $"Faceit: {worstPicks.First()!.Faceit}\n" +
-            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n" +
-            $"Other:" + alternative;
+            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
     }
 
     #region Events
@@ -358,8 +358,10 @@ public partial class MainWindowViewModel : ObservableObject
 
         BestAveragePick = null;
         BestAveragePickInfo = null;
+        BestAlternativeHeroes = null;
         WorstAveragePick = null;
         WorstAveragePickInfo = null;
+        WorstAlternativeHeroes = null;
     }
 
     [RelayCommand]

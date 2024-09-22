@@ -1,6 +1,7 @@
 ﻿using Dota2DraftHelper.Models;
 using HtmlAgilityPack;
 using System.Windows;
+using System.Xml;
 
 namespace Dota2DraftHelper.Services;
 
@@ -22,6 +23,8 @@ public static class Parsing
             foreach (var heroRow in heroRows)
             {
                 var heroInfo = heroRow.SelectSingleNode(".//div[@class='tw-flex tw-flex-col tw-gap-0']");
+                var heroImage = heroRow.SelectSingleNode(".//img[@class='tw-w-auto tw-h-6 sm:tw-h-8 tw-shrink-0 " +
+                    "tw-rounded-sm tw-shadow-sm tw-shadow-black/20']");
 
                 if (heroInfo != null)
                 {
@@ -52,6 +55,25 @@ public static class Parsing
         if (heroes.Count() != 0)
         {
             heroes = heroes.DistinctBy(hero => hero.Name).ToList();
+        }
+
+        foreach (var hero in heroes)
+        {
+            byte[]? imageBytes;
+            if (hero.Name.ToLower().Contains("warrunner"))
+            {
+                imageBytes = await ImageServices.DownloadImageAsync("centaur-warchief");
+            }
+            else if (hero.Name.ToLower().Equals("io"))
+            {
+                imageBytes = await ImageServices.DownloadImageAsync("wisp");
+            }
+            else
+            {
+                imageBytes = await ImageServices.DownloadImageAsync(hero.Name.ToLower().Replace(" ", "-"));
+            }
+
+            hero.ImageData = imageBytes;
         }
 
         return heroes;

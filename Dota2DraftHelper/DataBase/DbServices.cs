@@ -55,8 +55,6 @@ public static class DbServices
             }
         }
     }
-
-
     public static async Task AddHeroWinRatesInDBAxync()
     {
 
@@ -92,7 +90,6 @@ public static class DbServices
             return await  db.CounterPickInfos.Where(x => x.WinRateDate == DateTime.Now.Date).Include(c => c.PickHero).Include(c => c.CounterPickHero).ToListAsync();
         }
     }
-
     public static async Task<List<Lane>> GetLanesAsync() // Get lanes list(OP)
     {
         using (var db = new ApplicationDBContext())
@@ -100,7 +97,6 @@ public static class DbServices
             return await db.Lanes.AsNoTracking().ToListAsync();
         }
     }
-
     public static async Task<List<OwnPick>> GetOwnPicksAsync(uint laneId) // Get own pick heroes(OP)
     {
         using (var db = new ApplicationDBContext())
@@ -108,7 +104,6 @@ public static class DbServices
             return await db.OwnPicks.AsNoTracking().Where(x => x.LaneId == laneId + 1).ToListAsync();
         }
     }
-
     public static async Task<bool> AddOwnHeroAsync(int heroId, int laneId) // Save own pick in DB(OP)
     {
         using (var db = new ApplicationDBContext())
@@ -131,7 +126,6 @@ public static class DbServices
             return false;
         }
     }
-
     public static async Task<bool> RemoveOwnHeroAsync(int heroId, int laneId) // Remove hero from own pick in DB(OP)
     {
         using (var db = new ApplicationDBContext())

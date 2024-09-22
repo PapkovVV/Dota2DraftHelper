@@ -40,6 +40,9 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] string bestAveragePickInfo = "";
     [ObservableProperty] string worstAveragePick = "";
     [ObservableProperty] string worstAveragePickInfo = "";
+
+    [ObservableProperty] byte[]? bestAveragePickImage = null;
+    [ObservableProperty] byte[]? worstAveragePickImage = null;
     public MainWindowViewModel()
     {
         Init();
@@ -239,6 +242,7 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task SetBestAveragePickUI(List<CounterPickInfo> winRates)
     {
         BestAveragePick = "";
+        BestAveragePickImage = null;
         BestAveragePickInfo = "";
         BestAlternativeHeroes = new ObservableCollection<Hero>();
 
@@ -262,6 +266,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         BestAveragePick = bestPicks.First()!.Name;
+        BestAveragePickImage = bestPicks.First()!.ImageData;
         BestAveragePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
             $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
     }
@@ -269,6 +274,7 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task SetWorstAveragePickUI(List<CounterPickInfo> winRates)
     {
         WorstAveragePick = "";
+        WorstAveragePickImage = null;
         WorstAveragePickInfo = "";
         WorstAlternativeHeroes = new ObservableCollection<Hero>();
 
@@ -292,6 +298,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         WorstAveragePick = worstPicks.First()!.Name;
+        WorstAveragePickImage = worstPicks.First()!.ImageData;
         WorstAveragePickInfo = $"Faceit: {worstPicks.First()!.Faceit}\n" +
             $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
     }
@@ -357,9 +364,11 @@ public partial class MainWindowViewModel : ObservableObject
         MidPick= null;
 
         BestAveragePick = null;
+        BestAveragePickImage = null;
         BestAveragePickInfo = null;
         BestAlternativeHeroes = null;
         WorstAveragePick = null;
+        WorstAveragePickImage = null;
         WorstAveragePickInfo = null;
         WorstAlternativeHeroes = null;
     }

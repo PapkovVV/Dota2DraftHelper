@@ -92,7 +92,10 @@
                             
                             <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick"  Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                    <StackPanel Orientation="Horizontal" Height="50">
+                                        <Image Source="{Binding BestAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                        <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                    </StackPanel>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     <ListBox ItemsSource="{Binding BestAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">
                                         <ListBox.ItemTemplate>
@@ -117,7 +120,10 @@
 
                             <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick" Margin="70 0 0 0" Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                    <StackPanel Orientation="Horizontal" Height="50">
+                                        <Image Source="{Binding WorstAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                        <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                    </StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     <ListBox ItemsSource="{Binding WorstAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">
                                         <ListBox.ItemTemplate>

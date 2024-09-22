@@ -40,6 +40,11 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] string bestAveragePickInfo = "";
     [ObservableProperty] string worstAveragePick = "";
     [ObservableProperty] string worstAveragePickInfo = "";
+    [ObservableProperty] string hSPickText = "";
+    [ObservableProperty] string sPickText = "";
+    [ObservableProperty] string offPickText = "";
+    [ObservableProperty] string carPickText = "";
+    [ObservableProperty] string midPickText = "";
 
     [ObservableProperty] byte[]? bestAveragePickImage = null;
     [ObservableProperty] byte[]? worstAveragePickImage = null;
@@ -371,36 +376,47 @@ public partial class MainWindowViewModel : ObservableObject
         WorstAveragePickImage = null;
         WorstAveragePickInfo = null;
         WorstAlternativeHeroes = null;
+
+        HSPickText = "";
+        SPickText = "";
+        OffPickText = "";
+        CarPickText = "";
+        MidPickText = "";
     }
 
     [RelayCommand]
     private void ClearHardSupport()
     {
         HSPick = null;
+        HSPickText = "";
     }
 
     [RelayCommand]
     private void ClearSupport()
     {
         SPick = null;
+        SPickText = "";
     }
 
     [RelayCommand]
     private void ClearOfflane()
     {
         OffPick = null;
+        OffPickText = "";
     }
 
     [RelayCommand]
     private void ClearCarry()
     {
         CarPick = null;
+        CarPickText = "";
     }
 
     [RelayCommand]
     private void ClearMid()
     {
         MidPick = null;
+        MidPickText = "";
     }
     #endregion Events
 }

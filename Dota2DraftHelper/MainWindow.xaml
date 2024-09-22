@@ -37,40 +37,40 @@
                                 <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}"/>
                                 <Label Content="Hard Support"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
-                                             Width="155" Height="30" Margin="10" SelectedItem="{Binding HSPick}"/>
+                                    <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" IsEditable="True" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                             Width="155" Height="30" Margin="10" SelectedItem="{Binding HSPick}" Text="{Binding HSPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearHardSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </fc:ButtonPlus>
                                 </StackPanel>
                                 <Label Content="Support"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus ItemsSource="{Binding Supports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
-                                             Width="155" Height="30" Margin="10" SelectedItem="{Binding SPick}"/>
+                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Supports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                             Width="155" Height="30" Margin="10" SelectedItem="{Binding SPick}" Text="{Binding SPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </fc:ButtonPlus>
                                 </StackPanel>
                                 <Label Content="Offlane"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus ItemsSource="{Binding Offlaners}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
-                                                Width="155" Height="30" Margin="10" SelectedItem="{Binding OffPick}"/>
+                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Offlaners}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                                Width="155" Height="30" Margin="10" SelectedItem="{Binding OffPick}" Text="{Binding OffPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearOfflaneCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </fc:ButtonPlus>
                                 </StackPanel>
                                 <Label Content="Carry"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus ItemsSource="{Binding Carrys}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
-                                                Width="155" Height="30" Margin="10" SelectedItem="{Binding CarPick}"/>
+                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Carrys}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                                Width="155" Height="30" Margin="10" SelectedItem="{Binding CarPick}" Text="{Binding CarPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearCarryCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </fc:ButtonPlus>
                                 </StackPanel>
                                 <Label Content="Mid"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus ItemsSource="{Binding Midds}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
-                                                Width="155" Height="30" Margin="10" SelectedItem="{Binding MidPick}"/>
+                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Midds}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                                Width="155" Height="30" Margin="10" SelectedItem="{Binding MidPick}" Text="{Binding MidPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearMidCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     </fc:ButtonPlus>
@@ -93,7 +93,7 @@
                             <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Best Average pick"  Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Height="50">
-                                        <Image Source="{Binding BestAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding BestAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
                                         <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
                                     </StackPanel>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -101,7 +101,7 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Image Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                                    <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
                                                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
                                                     <TextBlock Text="{Binding WinRate}" VerticalAlignment="Center"/>
                                                 </StackPanel>
@@ -121,7 +121,7 @@
                             <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Header="Worst Average pick" Margin="70 0 0 0" Visibility="{Binding IsAPAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Height="50">
-                                        <Image Source="{Binding WorstAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding WorstAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
                                         <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
                                     </StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -129,7 +129,7 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Image Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                                    <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
                                                     <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
                                                     <TextBlock Text="{Binding WinRate}" VerticalAlignment="Center"/>
                                                 </StackPanel>

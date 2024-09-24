@@ -8,6 +8,7 @@ using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -33,6 +34,8 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] bool isProgressExecuting = true;
     [ObservableProperty] bool isUIAvailable;
+    [ObservableProperty] bool isAllHeroes;
+    [ObservableProperty] bool canWriteHeroesNames;
     [ObservableProperty] bool isAPAvailable = false;
 
     [ObservableProperty] string bestAveragePick = "";
@@ -65,6 +68,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         await CacheLanes.GetLanesAsync();
         await GetHeroesInComboBox();
+
+        await GetJsonSettings();
 
         IsProgressExecuting = false;
         IsUIAvailable = true;
@@ -222,7 +227,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (enemyIds.Count > 0)
         {
-            if (!JSONServices.LoadSettingsAsync().Result.Item1)
+            if (!IsAllHeroes)
             {
                 var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); // Get own picks
 
@@ -303,6 +308,13 @@ public partial class MainWindowViewModel : ObservableObject
         WorstAveragePickImage = worstPicks.First()!.ImageData;
         WorstAveragePickInfo = $"Faceit: {worstPicks.First()!.Faceit}\n" +
             $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
+    }
+
+    private async Task GetJsonSettings()
+    {
+        var (isAllHeroes, canWriteHeroesNames) = await JSONServices.LoadSettingsAsync();
+        IsAllHeroes = isAllHeroes;
+        CanWriteHeroesNames = canWriteHeroesNames;
     }
 
     #region Events
@@ -411,10 +423,14 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void Settings()
+    private async Task SettingsAsync()
     {
         SettingsDialog settingsDialog = new SettingsDialog();
-        settingsDialog.ShowDialog();
+
+        if (settingsDialog.ShowDialog() == true)
+        {
+            await GetJsonSettings();
+        }
     }
     #endregion Events
 }

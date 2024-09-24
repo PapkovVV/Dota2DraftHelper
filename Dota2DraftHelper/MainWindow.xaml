@@ -42,7 +42,7 @@
                                 <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray"/>
                                 <Label Content="Hard Support"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" IsEditable="True" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" IsEditable="{Binding CanWriteHeroesNames}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                              Width="155" Height="30" Margin="10" SelectedItem="{Binding HSPick}" Text="{Binding HSPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearHardSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -50,7 +50,7 @@
                                 </StackPanel>
                                 <Label Content="Support"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Supports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ComboBoxPlus IsEditable="{Binding CanWriteHeroesNames}" ItemsSource="{Binding Supports}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                              Width="155" Height="30" Margin="10" SelectedItem="{Binding SPick}" Text="{Binding SPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearSupportCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -58,7 +58,7 @@
                                 </StackPanel>
                                 <Label Content="Offlane"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Offlaners}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ComboBoxPlus IsEditable="{Binding CanWriteHeroesNames}" ItemsSource="{Binding Offlaners}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                                 Width="155" Height="30" Margin="10" SelectedItem="{Binding OffPick}" Text="{Binding OffPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearOfflaneCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -66,7 +66,7 @@
                                 </StackPanel>
                                 <Label Content="Carry"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Carrys}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ComboBoxPlus IsEditable="{Binding CanWriteHeroesNames}" ItemsSource="{Binding Carrys}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                                 Width="155" Height="30" Margin="10" SelectedItem="{Binding CarPick}" Text="{Binding CarPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearCarryCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -74,7 +74,7 @@
                                 </StackPanel>
                                 <Label Content="Mid"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <fc:ComboBoxPlus IsEditable="True" ItemsSource="{Binding Midds}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
+                                    <fc:ComboBoxPlus IsEditable="{Binding CanWriteHeroesNames}" ItemsSource="{Binding Midds}" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 
                                                 Width="155" Height="30" Margin="10" SelectedItem="{Binding MidPick}" Text="{Binding MidPickText}"/>
                                     <fc:ButtonPlus Width="30" Height="30" Command="{Binding ClearMidCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray">
                                         <TextBlock Text="⛔" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>

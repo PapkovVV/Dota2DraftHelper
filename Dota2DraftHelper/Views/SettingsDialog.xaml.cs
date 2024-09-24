@@ -13,4 +13,9 @@ public partial class SettingsDialog : Window
         InitializeComponent();
         DataContext = new SettingsViewModel();
     }
+
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+        DialogResult = true;
+    }
 }

@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:Dota2DraftHelper.Views"
         xmlns:fc="http://devpelux.github.io/fullcontrols"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Title="Settings" Height="250" Width="300">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Title="Settings" Height="250" Width="300" Closing="Window_Closing">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <fc:CheckBoxPlus Content="Use all heroes" FlowDirection="RightToLeft" IsChecked="{Binding IsAllHeroes}" HorizontalAlignment="Left" Margin="0 10 0 10"/>
-        <fc:CheckBoxPlus Content="Editable heroes lists" FlowDirection="RightToLeft" IsChecked="{Binding CanWriteHeroesNames}" HorizontalAlignment="Left" Margin="0 10 0 10"/>
+        <fc:CheckBoxPlus Content="Editable heroes lists" FlowDirection="RightToLeft" IsChecked="{Binding CanWriteHeroesNames}" HorizontalAlignment="Left" Margin="0 15 0 10"/>
     </StackPanel>
 </Window>

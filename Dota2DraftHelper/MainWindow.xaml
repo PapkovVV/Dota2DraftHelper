@@ -28,9 +28,6 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel>
-                        <!--<fc:CheckBoxPlus Grid.Column="0" HorizontalAlignment="Left" Content="Use all heroes" FlowDirection="RightToLeft" Margin="20" IsChecked="{Binding IsAllHeroes}" 
-                                         Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>-->
-
                         <fc:ButtonPlus HorizontalAlignment="Left" Margin="20" Height="30" Width="30" BackgroundOnMouseOver="LightGray" Cursor="Hand" Command="{Binding SettingsCommand}"
                                        Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}" >
                             <TextBlock Text="⚙️" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
@@ -99,7 +96,32 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Height="50">
                                         <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding BestAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
-                                        <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                        <TextBlock Text="{Binding BestAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black">
+                                            <TextBlock.ToolTip>
+                                                <ToolTip>
+                                                    <StackPanel>
+                                                        <ListBox ItemsSource="{Binding BestHeroCounterList}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="auto">
+                                                            <ListBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Text="{Binding WinRate}" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ListBox.ItemTemplate>
+                                                            <ListBox.ItemContainerStyle>
+                                                                <Style TargetType="ListBoxItem">
+                                                                    <Setter Property="Height" Value="45"/>
+                                                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                                                </Style>
+                                                            </ListBox.ItemContainerStyle>
+                                                        </ListBox>
+                                                    </StackPanel>
+                                                </ToolTip>
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
                                     </StackPanel>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     <ListBox ItemsSource="{Binding BestAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">
@@ -127,7 +149,32 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal" Height="50">
                                         <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding WorstAveragePickImage, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
-                                        <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black"/>
+                                        <TextBlock Text="{Binding WorstAveragePick}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" FontWeight="Black">
+                                            <TextBlock.ToolTip>
+                                                <ToolTip>
+                                                    <StackPanel>
+                                                        <ListBox ItemsSource="{Binding WorstHeroCounterList}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="auto">
+                                                            <ListBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding ImageData, Converter={StaticResource ByteArrayToImageSourceConverter}}" Width="60" Height="100" Margin="5" />
+                                                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                                                        <TextBlock Text="{Binding WinRate}" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ListBox.ItemTemplate>
+                                                            <ListBox.ItemContainerStyle>
+                                                                <Style TargetType="ListBoxItem">
+                                                                    <Setter Property="Height" Value="45"/>
+                                                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                                                </Style>
+                                                            </ListBox.ItemContainerStyle>
+                                                        </ListBox>
+                                                    </StackPanel>
+                                                </ToolTip>
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
                                     </StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     <ListBox ItemsSource="{Binding WorstAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">

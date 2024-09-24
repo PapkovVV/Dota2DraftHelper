@@ -23,6 +23,8 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> midds = null!;
     [ObservableProperty] ObservableCollection<Hero> bestAlternativeHeroes = null!;
     [ObservableProperty] ObservableCollection<Hero> worstAlternativeHeroes = null!;
+    [ObservableProperty] ObservableCollection<Hero> bestHeroCounterList = null!;
+    [ObservableProperty] ObservableCollection<Hero> worstHeroCounterList = null!;
     [ObservableProperty] uint selectedLane = 0;
     [ObservableProperty] string bestPick = "";
 
@@ -252,6 +254,7 @@ public partial class MainWindowViewModel : ObservableObject
         BestAveragePickImage = null;
         BestAveragePickInfo = "";
         BestAlternativeHeroes = new ObservableCollection<Hero>();
+        BestHeroCounterList = new ObservableCollection<Hero>();
 
         var averageWinRates = winRates.GroupBy(x => x.PickId).Select(g => new
         {
@@ -276,6 +279,7 @@ public partial class MainWindowViewModel : ObservableObject
         BestAveragePickImage = bestPicks.First()!.ImageData;
         BestAveragePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
             $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
+        BestHeroCounterList = GetHeroCounterList(allHeroes, winRates, bestPicks.First()!.Id);
     }
 
     private async Task SetWorstAveragePickUI(List<CounterPickInfo> winRates)
@@ -284,6 +288,7 @@ public partial class MainWindowViewModel : ObservableObject
         WorstAveragePickImage = null;
         WorstAveragePickInfo = "";
         WorstAlternativeHeroes = new ObservableCollection<Hero>();
+        WorstHeroCounterList = new ObservableCollection<Hero>();
 
         var averageWinRates = winRates.GroupBy(x => x.PickId).Select(g => new
         {
@@ -308,6 +313,26 @@ public partial class MainWindowViewModel : ObservableObject
         WorstAveragePickImage = worstPicks.First()!.ImageData;
         WorstAveragePickInfo = $"Faceit: {worstPicks.First()!.Faceit}\n" +
             $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
+        WorstHeroCounterList = GetHeroCounterList(allHeroes, winRates, worstPicks.First()!.Id);
+    }
+
+    private ObservableCollection<Hero> GetHeroCounterList(List<Hero> allHeroes ,List<CounterPickInfo> winRates, int heroId)
+    {
+        ObservableCollection<Hero> counterHeroList = new ObservableCollection<Hero>();
+
+        var contributingIds = winRates.Where(x => x.PickId == heroId).ToList();
+
+        foreach (var item in contributingIds)
+        {
+            Hero searchedHero = allHeroes.FirstOrDefault(x => x.Id == item.CounterPickId)!;
+            counterHeroList.Add(new Hero
+            {
+                Name = searchedHero.Name,
+                ImageData = searchedHero.ImageData,
+                WinRate = $": {item.WinRate:F2}%"
+            });
+        }
+        return counterHeroList;
     }
 
     private async Task GetJsonSettings()

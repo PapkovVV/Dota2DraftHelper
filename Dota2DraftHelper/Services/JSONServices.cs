@@ -6,18 +6,19 @@ namespace Dota2DraftHelper.Services;
 public class JSONServices
 {
     private static string jsonFilePath = "Settings.json";
-    public static void SaveSettings(bool IsAllHeroesChecked) //Save settings in JSON(OP)
+    public static void SaveSettings(bool IsAllHeroesChecked, bool CanWriteHeroesNames) //Save settings in JSON(OP)
     {
         Settings settings = new Settings
         {
-            IsAllHeroes = IsAllHeroesChecked
+            IsAllHeroes = IsAllHeroesChecked,
+            CanWriteHeroesNames = CanWriteHeroesNames
         };
 
         string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
 
         File.WriteAllTextAsync(jsonFilePath, json);
     }
-    public static async Task<bool> LoadSettingsAsync() //Load settings from JSON
+    public static async Task<(bool, bool)> LoadSettingsAsync() //Load settings from JSON
     {
         if (File.Exists(jsonFilePath))
         {
@@ -25,9 +26,9 @@ public class JSONServices
 
             Settings settings = JsonConvert.DeserializeObject<Settings>(json)!;
 
-            return settings.IsAllHeroes;
+            return (settings.IsAllHeroes, settings.CanWriteHeroesNames);
         }
 
-        return false;
+        return (false, false);
     }
 }

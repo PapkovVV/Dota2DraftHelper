@@ -33,7 +33,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty] bool isProgressExecuting = true;
     [ObservableProperty] bool isUIAvailable;
-    [ObservableProperty] bool isAllHeroes;
     [ObservableProperty] bool isAPAvailable = false;
 
     [ObservableProperty] string bestAveragePick = "";
@@ -66,8 +65,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         await CacheLanes.GetLanesAsync();
         await GetHeroesInComboBox();
-
-        IsAllHeroes = await JSONServices.LoadSettingsAsync();
 
         IsProgressExecuting = false;
         IsUIAvailable = true;
@@ -225,7 +222,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (enemyIds.Count > 0)
         {
-            if (!IsAllHeroes)
+            if (!JSONServices.LoadSettingsAsync().Result.Item1)
             {
                 var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); // Get own picks
 
@@ -340,12 +337,6 @@ public partial class MainWindowViewModel : ObservableObject
         GetBestAgainsPick();
     }
 
-    partial void OnIsAllHeroesChanged(bool oldValue, bool newValue)//(OP)
-    {
-        JSONServices.SaveSettings(newValue);
-        Refresh();
-    }
-
     [RelayCommand]
     private void AddHeroInPool() // (OP)
     {
@@ -417,6 +408,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         MidPick = null;
         MidPickText = "";
+    }
+
+    [RelayCommand]
+    private void Settings()
+    {
+        SettingsDialog settingsDialog = new SettingsDialog();
+        settingsDialog.ShowDialog();
     }
     #endregion Events
 }

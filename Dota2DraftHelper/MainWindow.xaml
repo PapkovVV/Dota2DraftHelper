@@ -7,7 +7,7 @@
         xmlns:ser="clr-namespace:Dota2DraftHelper.Services"
         xmlns:fc="http://devpelux.github.io/fullcontrols"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen" ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
         Title="Dota 2 Draft Helper" Height="720" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -28,13 +28,18 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel>
-                        <fc:CheckBoxPlus Grid.Column="0" HorizontalAlignment="Left" Content="Use all heroes" FlowDirection="RightToLeft" Margin="20" IsChecked="{Binding IsAllHeroes}" 
-                                         Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <!--<fc:CheckBoxPlus Grid.Column="0" HorizontalAlignment="Left" Content="Use all heroes" FlowDirection="RightToLeft" Margin="20" IsChecked="{Binding IsAllHeroes}" 
+                                         Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>-->
 
-                        <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10" Padding="10" 
+                        <fc:ButtonPlus HorizontalAlignment="Left" Margin="20" Height="30" Width="30" BackgroundOnMouseOver="LightGray" Cursor="Hand" Command="{Binding SettingsCommand}"
+                                       Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}" >
+                            <TextBlock Text="⚙️" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                        </fc:ButtonPlus>
+
+                        <GroupBox Grid.Column="0" Header="Select enemy heroes" Margin="10 0 10 10" Padding="10" 
                               Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}" Height="450">
                             <StackPanel Height="auto">
-                                <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}"/>
+                                <fc:ButtonPlus HorizontalAlignment="Right" Content="⟳" Width="25" Command="{Binding RefreshCommand}" Cursor="Hand" BackgroundOnMouseOver="LightGray"/>
                                 <Label Content="Hard Support"/>
                                 <StackPanel Orientation="Horizontal">
                                     <fc:ComboBoxPlus ItemsSource="{Binding HardSupports}" IsEditable="True" ToolTipService.Placement="Right" VerticalContentAlignment="Center" 

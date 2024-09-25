@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dota2DraftHelper.Models;
 
@@ -10,4 +11,8 @@ public class Hero
     public byte[]? ImageData { get; set; } = null;
     [NotMapped]
     public string? WinRate { get; set; } = null;
+    [NotMapped]
+    public ObservableCollection<Hero> SelectedBestHeroCounterList { get; set; } = new ObservableCollection<Hero>();
+    [NotMapped]
+    public ObservableCollection<Hero> SelectedWorstHeroCounterList { get; set; } = new ObservableCollection<Hero>();
 }

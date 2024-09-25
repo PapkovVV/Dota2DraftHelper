@@ -21,12 +21,13 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> offlaners = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> carrys = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> midds = null!;
+
     [ObservableProperty] ObservableCollection<Hero> bestAlternativeHeroes = null!;
     [ObservableProperty] ObservableCollection<Hero> worstAlternativeHeroes = null!;
     [ObservableProperty] ObservableCollection<Hero> bestHeroCounterList = null!;
     [ObservableProperty] ObservableCollection<Hero> worstHeroCounterList = null!;
+
     [ObservableProperty] uint selectedLane = 0;
-    [ObservableProperty] string bestPick = "";
 
     [ObservableProperty] ComboBoxItemPlusWithInfo? hSPick;
     [ObservableProperty] ComboBoxItemPlusWithInfo? sPick;
@@ -40,6 +41,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] bool canWriteHeroesNames;
     [ObservableProperty] bool isAPAvailable = false;
 
+    [ObservableProperty] string bestPick = "";
     [ObservableProperty] string bestAveragePick = "";
     [ObservableProperty] string bestAveragePickInfo = "";
     [ObservableProperty] string worstAveragePick = "";
@@ -272,6 +274,7 @@ public partial class MainWindowViewModel : ObservableObject
         for (int i = 1; i < bestPicks.Count; i++)
         {
             bestPicks[i]!.WinRate = $": {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+            bestPicks[i]!.SelectedBestHeroCounterList = GetHeroCounterList(allHeroes, winRates, bestPicks[i]!.Id);
             BestAlternativeHeroes.Add(bestPicks[i]!);
         }
 
@@ -306,6 +309,7 @@ public partial class MainWindowViewModel : ObservableObject
         for (int i = 1; i < worstPicks.Count; i++)
         {
             worstPicks[i]!.WinRate = $": {averageWinRates.ElementAt(i).AverageWinRate:F2}%";
+            worstPicks[i]!.SelectedWorstHeroCounterList = GetHeroCounterList(allHeroes, winRates, worstPicks[i]!.Id);
             WorstAlternativeHeroes.Add(worstPicks[i]!);
         }
 

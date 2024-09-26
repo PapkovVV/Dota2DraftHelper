@@ -40,6 +40,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] bool isAllHeroes;
     [ObservableProperty] bool canWriteHeroesNames;
     [ObservableProperty] bool isAPAvailable = false;
+    [ObservableProperty] bool isLanesComboAvailible;
 
     [ObservableProperty] string bestPick = "";
     [ObservableProperty] string bestAveragePick = "";
@@ -77,6 +78,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         IsProgressExecuting = false;
         IsUIAvailable = true;
+        IsLanesComboAvailible = !IsAllHeroes;
     }
 
     private async Task GetHeroesInComboBox()
@@ -459,6 +461,7 @@ public partial class MainWindowViewModel : ObservableObject
         if (settingsDialog.ShowDialog() == true)
         {
             await GetJsonSettings();
+            IsLanesComboAvailible = !IsAllHeroes;
         }
     }
     #endregion Events

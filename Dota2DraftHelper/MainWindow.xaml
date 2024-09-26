@@ -82,7 +82,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                        <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" Visibility="{Binding IsLanesComboAvailible, Converter={StaticResource BoolToVisibilityConverter}}">
                             <fc:ComboBoxItemPlus Content="Safe Lane (Pos 1)"/>
                             <fc:ComboBoxItemPlus Content="Mid Lane (Pos 2)"/>
                             <fc:ComboBoxItemPlus Content="Hard Lane (Pos 3)"/>
@@ -263,9 +263,9 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Hero pool" IsSelected="True">
+            <TabItem Header="Hero pool" IsSelected="True" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel>
-                    <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}">
+                    <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" >
                         <fc:ComboBoxItemPlus Content="Safe Lane (Pos 1)"/>
                         <fc:ComboBoxItemPlus Content="Mid Lane (Pos 2)"/>
                         <fc:ComboBoxItemPlus Content="Hard Lane (Pos 3)"/>

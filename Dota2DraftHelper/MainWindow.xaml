@@ -119,7 +119,8 @@
                                         </TextBlock>
                                     </StackPanel>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    
+
+                                    <fc:TextBoxPlus Label="Search Hero" VerticalContentAlignment="Center" Height="43" Margin="5" Text="{Binding BestAlternativePickName, UpdateSourceTrigger=PropertyChanged}"/>
                                     <ListBox ItemsSource="{Binding BestAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335" Width="250">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
@@ -197,6 +198,8 @@
                                         </TextBlock>
                                     </StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                    <fc:TextBoxPlus Label="Search Hero" VerticalContentAlignment="Center" Height="43" Margin="5" Text="{Binding WorstAlternativePickName, UpdateSourceTrigger=PropertyChanged}"/>
                                     <ListBox ItemsSource="{Binding WorstAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335" Width="250">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>

@@ -8,6 +8,8 @@ using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -52,6 +54,8 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] string offPickText = "";
     [ObservableProperty] string carPickText = "";
     [ObservableProperty] string midPickText = "";
+    [ObservableProperty] string bestAlternativePickName = "";
+    [ObservableProperty] string worstAlternativePickName = "";
 
     [ObservableProperty] byte[]? bestAveragePickImage = null;
     [ObservableProperty] byte[]? worstAveragePickImage = null;
@@ -296,7 +300,7 @@ public partial class MainWindowViewModel : ObservableObject
         BestAveragePick = bestPicks.First()!.Name;
         BestAveragePickImage = bestPicks.First()!.ImageData;
         BestAveragePickInfo = $"Faceit: {bestPicks.First()!.Faceit}\n" +
-            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
+            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n";
         BestHeroCounterList = GetHeroCounterList(allHeroes, winRates, bestPicks.First()!.Id);
     }
 
@@ -312,7 +316,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             PickId = g.Key,
             AverageWinRate = g.Sum(x => x.WinRate)
-        }).OrderByDescending(x => x.AverageWinRate).Take(25).ToList();
+        }).OrderByDescending(x => x.AverageWinRate).ToList();
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
@@ -331,7 +335,7 @@ public partial class MainWindowViewModel : ObservableObject
         WorstAveragePick = worstPicks.First()!.Name;
         WorstAveragePickImage = worstPicks.First()!.ImageData;
         WorstAveragePickInfo = $"Faceit: {worstPicks.First()!.Faceit}\n" +
-            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n\n";
+            $"Average WinRate: {averageWinRates.First().AverageWinRate:F2}%\n";
         WorstHeroCounterList = GetHeroCounterList(allHeroes, winRates, worstPicks.First()!.Id);
     }
 
@@ -361,6 +365,15 @@ public partial class MainWindowViewModel : ObservableObject
         CanWriteHeroesNames = canWriteHeroesNames;
     }
 
+    private async void RefreshBestAlternativePicks()
+    {
+        await SetBestAveragePickUI(await GetAllRequiredWinRatesAsync());
+    }
+
+    private async void RefreshWorstAlternativePicks()
+    {
+        await SetWorstAveragePickUI(await GetAllRequiredWinRatesAsync());
+    }
     #region Events
 
     partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
@@ -429,6 +442,9 @@ public partial class MainWindowViewModel : ObservableObject
         OffPickText = "";
         CarPickText = "";
         MidPickText = "";
+
+        BestAlternativePickName = "";
+        WorstAlternativePickName = "";
     }
 
     [RelayCommand]
@@ -493,5 +509,18 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
     }
+
+    partial void OnBestAlternativePickNameChanging(string value)
+    {
+        RefreshBestAlternativePicks();
+        BestAlternativeHeroes = new ObservableCollection<Hero>(BestAlternativeHeroes.Where(hero => hero.Name.ToLower().StartsWith(value.ToLower())));
+    }
+
+    partial void OnWorstAlternativePickNameChanging(string value)
+    {
+        RefreshWorstAlternativePicks();
+        WorstAlternativeHeroes = new ObservableCollection<Hero>(WorstAlternativeHeroes.Where(hero => hero.Name.ToLower().StartsWith(value.ToLower())));
+    }
+
     #endregion Events
 }

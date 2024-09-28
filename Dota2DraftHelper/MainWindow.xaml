@@ -8,7 +8,7 @@
         xmlns:fc="http://devpelux.github.io/fullcontrols"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
-        Title="Dota 2 Draft Helper" Height="720" Width="900" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
+        Title="Dota 2 Draft Helper" Height="720" Width="950" Icon="pack://application:,,,/Images/Dota2DraftHelperIcon.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <ser:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
@@ -82,13 +82,8 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                        <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" Visibility="{Binding IsLanesComboAvailible, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <fc:ComboBoxItemPlus Content="Safe Lane (Pos 1)"/>
-                            <fc:ComboBoxItemPlus Content="Mid Lane (Pos 2)"/>
-                            <fc:ComboBoxItemPlus Content="Hard Lane (Pos 3)"/>
-                            <fc:ComboBoxItemPlus Content="Support (Pos 4)"/>
-                            <fc:ComboBoxItemPlus Content="Hard Support (Pos 5)"/>
-                        </fc:ComboBoxPlus>
+                        <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" ItemsSource="{Binding Lanes}"
+                                         Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}" IsEnabled="{Binding IsLanesAvailable}"/>
 
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="30 -5 0 0" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                             
@@ -125,7 +120,7 @@
                                     </StackPanel>
                                     <TextBlock Text="{Binding BestAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     
-                                    <ListBox ItemsSource="{Binding BestAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">
+                                    <ListBox ItemsSource="{Binding BestAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335" Width="250">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
@@ -202,7 +197,7 @@
                                         </TextBlock>
                                     </StackPanel>
                                     <TextBlock Text="{Binding WorstAveragePickInfo}" TextAlignment="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    <ListBox ItemsSource="{Binding WorstAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335">
+                                    <ListBox ItemsSource="{Binding WorstAlternativeHeroes}" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="335" Width="250">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
@@ -265,13 +260,7 @@
 
             <TabItem Header="Hero pool" IsSelected="True" Visibility="{Binding IsUIAvailable, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel>
-                    <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" >
-                        <fc:ComboBoxItemPlus Content="Safe Lane (Pos 1)"/>
-                        <fc:ComboBoxItemPlus Content="Mid Lane (Pos 2)"/>
-                        <fc:ComboBoxItemPlus Content="Hard Lane (Pos 3)"/>
-                        <fc:ComboBoxItemPlus Content="Support (Pos 4)"/>
-                        <fc:ComboBoxItemPlus Content="Hard Support (Pos 5)"/>
-                    </fc:ComboBoxPlus>
+                    <fc:ComboBoxPlus Width="150" HorizontalAlignment="Right" Margin="20" SelectedIndex="{Binding SelectedLane}" ItemsSource="{Binding Lanes}" />
 
                     <fc:ButtonPlus Width="100" Height="30" HorizontalAlignment="Right" Margin="0 0 20 0" Content="Add Hero" Command="{Binding AddHeroInPoolCommand}"/>
 

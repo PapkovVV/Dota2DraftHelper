@@ -8,7 +8,6 @@ using Dota2DraftHelper.UserControls;
 using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace Dota2DraftHelper.ViewModels;
 
@@ -21,6 +20,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> offlaners = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> carrys = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> midds = null!;
+    [ObservableProperty] ObservableCollection<ComboBoxItemPlusWithInfo>? lanes = null;
 
     [ObservableProperty] ObservableCollection<Hero> bestAlternativeHeroes = null!;
     [ObservableProperty] ObservableCollection<Hero> worstAlternativeHeroes = null!;
@@ -40,7 +40,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] bool isAllHeroes;
     [ObservableProperty] bool canWriteHeroesNames;
     [ObservableProperty] bool isAPAvailable = false;
-    [ObservableProperty] bool isLanesComboAvailible;
+    [ObservableProperty] bool isLanesAvailable = true;
 
     [ObservableProperty] string bestPick = "";
     [ObservableProperty] string bestAveragePick = "";
@@ -78,7 +78,21 @@ public partial class MainWindowViewModel : ObservableObject
 
         IsProgressExecuting = false;
         IsUIAvailable = true;
-        IsLanesComboAvailible = !IsAllHeroes;
+
+        if (IsAllHeroes)
+        {
+            Lanes = null;
+            IsLanesAvailable = false;
+        }
+        else
+        {
+            Lanes = new ObservableCollection<ComboBoxItemPlusWithInfo>()
+            {   new ComboBoxItemPlusWithInfo(){ Content = "Safe Lane (Pos1)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Mid Lane (Pos2)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Hard Lane (Pos3)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Support (Pos4)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Hard Support (Pos5)"}};
+        }
     }
 
     private async Task GetHeroesInComboBox()
@@ -247,7 +261,6 @@ public partial class MainWindowViewModel : ObservableObject
                                 x.CounterPickId != x.PickId).ToList();
             }
         }
-        
 
         return counterPicks;
     }
@@ -264,7 +277,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             PickId = g.Key,
             AverageWinRate = g.Sum(x => x.WinRate)
-        }).OrderBy(x => x.AverageWinRate).Take(25).ToList();
+        }).OrderBy(x => x.AverageWinRate).ToList();
 
         var allHeroes = await CacheHeroes.GetHeroesAsync();
 
@@ -322,7 +335,7 @@ public partial class MainWindowViewModel : ObservableObject
         WorstHeroCounterList = GetHeroCounterList(allHeroes, winRates, worstPicks.First()!.Id);
     }
 
-    private ObservableCollection<Hero> GetHeroCounterList(List<Hero> allHeroes ,List<CounterPickInfo> winRates, int heroId)
+    private ObservableCollection<Hero> GetHeroCounterList(List<Hero> allHeroes, List<CounterPickInfo> winRates, int heroId)
     {
         ObservableCollection<Hero> counterHeroList = new ObservableCollection<Hero>();
 
@@ -461,7 +474,23 @@ public partial class MainWindowViewModel : ObservableObject
         if (settingsDialog.ShowDialog() == true)
         {
             await GetJsonSettings();
-            IsLanesComboAvailible = !IsAllHeroes;
+
+            if (IsAllHeroes)
+            {
+                Lanes = null;
+                IsLanesAvailable = false;
+            }
+            else
+            {
+                IsLanesAvailable = true;
+
+                Lanes = new ObservableCollection<ComboBoxItemPlusWithInfo>()
+            {   new ComboBoxItemPlusWithInfo(){ Content = "Safe Lane (Pos1)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Mid Lane (Pos2)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Hard Lane (Pos3)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Support (Pos4)"},
+                new ComboBoxItemPlusWithInfo(){ Content = "Hard Support (Pos5)"}};
+            }
         }
     }
     #endregion Events

@@ -15,7 +15,9 @@ namespace Dota2DraftHelper.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    [ObservableProperty] ObservableCollection<OwnPick> heroesFromPool = null!;// Heroes from own hero pool
+    //Герои из введенного пула героев (вкладка 2)
+    [ObservableProperty] ObservableCollection<OwnPick> heroesFromPool = null!; 
+
     [ObservableProperty] ObservableCollection<HeroControl> heroesFromPoolUI = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> hardSupports = null!;
     [ObservableProperty] ObservableCollection<ComboBoxItemPlus> supports = null!;
@@ -65,11 +67,11 @@ public partial class MainWindowViewModel : ObservableObject
         SetUIAsync(SelectedLane);
     }
 
-    private async void Init()// (OP)
+    private async void Init()//Start method(OP)
     {
         IsUIAvailable = false;
 
-        await DbServices.AddHeroesInDBAsync();
+        await DbServices.AddHeroesInDBAsync();//Adding heroes and info about
         await CacheHeroes.GetHeroesAsync();
 
         await DbServices.AddHeroWinRatesInDBAxync();
@@ -222,7 +224,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (HSPick != null || SPick != null || OffPick != null || CarPick != null || MidPick != null)
         {
-            List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required winrates
+            List<CounterPickInfo> winRates = await GetAllRequiredWinRatesAsync(); //Get all required info
 
             if (winRates.Count > 0)
             {
@@ -253,7 +255,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             if (!IsAllHeroes)
             {
-                var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); // Get own picks
+                var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); //Get own picks
 
                 counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) && x.CounterPickId != x.PickId).ToList();
             }
@@ -373,7 +375,7 @@ public partial class MainWindowViewModel : ObservableObject
     }
     #region Events
 
-    partial void OnSelectedLaneChanged(uint oldValue, uint newValue) // (OP)
+    partial void OnSelectedLaneChanged(uint oldValue, uint newValue)//Changing lane(start tab) (OP)
     {
         SetUIAsync(newValue);
     }

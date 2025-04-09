@@ -248,7 +248,7 @@
                     </StackPanel>
 
                     <StackPanel  Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding IsProgressExecuting, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <Label Content="Executing operations. Wait please..." HorizontalAlignment="Center"/>
+                        <Label Content="Executing operations. Wait, please..." HorizontalAlignment="Center"/>
                         <ProgressBar Name="indeterminateProgressBar" IsIndeterminate="True" Height="15" Width="400">
                             <ProgressBar.Style>
                                 <Style TargetType="ProgressBar">

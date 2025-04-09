@@ -82,12 +82,17 @@ public static class DbServices
             }
         }
     }
+
+    //Получение данных о преимуществах (OP)
     public static async Task<List<CounterPickInfo>> GetWinRatesAsync()
     {
         using (var db = new ApplicationDBContext())
         {
-            DateTime lastDate = await db.CounterPickInfos.Select(x => x.WinRateDate).OrderByDescending(x => x).FirstOrDefaultAsync();
-            return await db.CounterPickInfos.Where(x => x.WinRateDate.Date == lastDate.Date).Include(c => c.PickHero).Include(c => c.CounterPickHero).ToListAsync();
+            DateTime lastDate = await db.CounterPickInfos.Select(x => x.WinRateDate).OrderByDescending(x => x).FirstOrDefaultAsync(); //Получаем последнюю дату из БД
+            return await db.CounterPickInfos.Where(x => x.WinRateDate.Date == lastDate.Date)
+                                            .Include(c => c.PickHero)
+                                            .Include(c => c.CounterPickHero)
+                                            .ToListAsync(); //Возвращаем список всех преимуществ на последнюю дату из БД
         }
     }
     public static async Task<List<Lane>> GetLanesAsync() // Get lanes list(OP)

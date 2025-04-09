@@ -17,7 +17,7 @@ public static class DbServices
 
                 var existingHeroes = await db.Heroes.AsNoTracking()
                                                     .Select(h => new { h.Name, h.Faceit })
-                                                    .ToListAsync();
+                                                    .ToListAsync(); //Parsing heroes
 
                 foreach (var hero in heroes)
                 {

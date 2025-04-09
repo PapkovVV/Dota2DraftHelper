@@ -10,7 +10,7 @@ public static class Parsing
     private static HtmlWeb htmlWeb = new HtmlWeb();
     private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(5);
 
-    public static async Task<List<Hero>> ParseHeroesInfoAsync() // Get the list of heroes (OP)
+    public static async Task<List<Hero>> ParseHeroesInfoAsync() // Get the list of heroes from dotabuff (OP)
     {
         var heroes = new List<Hero>();
 
@@ -30,7 +30,7 @@ public static class Parsing
                 {
                     Hero newHero = new Hero();
 
-                    var heroName = heroInfo.SelectSingleNode(".//div");
+                    var heroName = heroInfo.SelectSingleNode(".//a");
                     var heroFaceit = heroInfo.SelectSingleNode(".//div[@class='tw-text-xs tw-text-secondary']");
 
                     if (heroName != null)

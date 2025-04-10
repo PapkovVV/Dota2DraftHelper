@@ -9,6 +9,7 @@ using Dota2DraftHelper.Views;
 using FullControls.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
 
 namespace Dota2DraftHelper.ViewModels;
@@ -241,7 +242,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task<List<CounterPickInfo>> GetAllRequiredWinRatesAsync()
     {
-        var counterPicks = await CacheWinRates.GetCounterPicksAsync(); //Get all winrates
+        var counterPicks = await CacheWinRates.GetCounterPicksAsync(); //Получаем преимущества всех героев
 
         List<int> enemyIds = new List<int>();
 
@@ -255,9 +256,9 @@ public partial class MainWindowViewModel : ObservableObject
         {
             if (!IsAllHeroes)
             {
-                var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); //Get own picks
+                var ownPicks = (await DbServices.GetOwnPicksAsync(SelectedLane)).Select(x => x.HeroId); //Получаем Id всех героев выбранной линии
 
-                counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) && x.CounterPickId != x.PickId).ToList();
+                counterPicks = counterPicks.Where(x => ownPicks.Contains(x.PickId) && enemyIds.Contains(x.CounterPickId) && !enemyIds.Contains(x.PickId) && x.CounterPickId != x.PickId).ToList();
             }
             else
             {
